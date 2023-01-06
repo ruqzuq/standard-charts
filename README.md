@@ -55,4 +55,5 @@ Now this trivial column chart should appear:
 ## References
 
 [1] Hichert, R. and Faisst, J. (2022) IBCS Standards 1.2. https://www.ibcs.com/ibcs-standards-1-2/
+
 [2] Brinton, W.C. (1914) Graphic methods for presenting facts.
