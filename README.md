@@ -1,9 +1,9 @@
 # Standard-Charts
 
-<a href="./dist/standard-charts_v0.1.0.js" download>
+<a href="https://raw.githubusercontent.com/ruqzuq/standard-charts/main/dist/standard-charts_v0.1.0.js" download>
 <img src="https://img.shields.io/badge/download-standard--charts_v0.1.0-%23009933?style=flat-square">
 </a>
-<a href="./dist/standard-charts_v0.1.0.js" download>
+<a href="https://ruqzuq.com/standard-charts" download>
 <img src="https://img.shields.io/badge/test-templates-%230066cc?style=flat-square">
 </a>
 
@@ -55,4 +55,5 @@ Now this trivial column chart should appear:
 ## References
 
 [1] Hichert, R. and Faisst, J. (2022) IBCS Standards 1.2. https://www.ibcs.com/ibcs-standards-1-2/
+
 [2] Brinton, W.C. (1914) Graphic methods for presenting facts.
