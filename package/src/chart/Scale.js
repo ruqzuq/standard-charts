@@ -30,7 +30,7 @@ export class Scale {
         }
       );
 
-      [(leftNegativeStackedValue, rightNegativeStackedValue)].forEach(
+      [leftNegativeStackedValue, rightNegativeStackedValue].forEach(
         (negativeStackedValue) => {
           if (negativeStackedValue > maxSecondaryHeight) {
             maxSecondaryHeight = negativeStackedValue;
