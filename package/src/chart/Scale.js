@@ -37,27 +37,17 @@ export class Scale {
         }
       });
 
-      let positiveStackedHeight = 0;
-      let negativeStackedHeight = 0;
+      const [primaryPositiveStackedValue, primaryNegativeStackedValue] =
+        DataPoint.stackValues(primary);
 
-      primary.forEach((metaDataPoint) => {
-        const value = metaDataPoint.value;
-        if (value > 0) {
-          positiveStackedHeight += value;
-        }
-        if (value < 0) {
-          negativeStackedHeight += value;
-        }
-      });
-
-      if (positiveStackedHeight > maxPrimaryHeight[0]) {
-        maxPrimaryHeight = [positiveStackedHeight, 1]; // Value label.
+      if (primaryPositiveStackedValue > maxPrimaryHeight[0]) {
+        maxPrimaryHeight = [primaryPositiveStackedValue, 1]; // Value label.
       }
-      if (negativeStackedHeight < minPrimaryHeight[0]) {
-        if (positiveStackedHeight === 0) {
-          minPrimaryHeight = [negativeStackedHeight, 1];
+      if (primaryNegativeStackedValue < minPrimaryHeight[0]) {
+        if (primaryPositiveStackedValue === 0) {
+          minPrimaryHeight = [primaryNegativeStackedValue, 1];
         } else {
-          minPrimaryHeight = [negativeStackedHeight, 2];
+          minPrimaryHeight = [primaryNegativeStackedValue, 2];
         }
       }
     }

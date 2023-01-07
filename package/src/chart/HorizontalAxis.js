@@ -34,13 +34,14 @@ export class HorizontalAxis {
         }
       };
 
+      const { left, primary, right } = DataPoint.allValues(data[i]);
+
       // key
       maxOuterFit(key);
       // positive and negative values
-      maxOuterFit(DataPoint.primaryValues(data[i])[0]);
-      maxOuterFit(DataPoint.primaryValues(data[i])[1]);
+      maxOuterFit(DataPoint.stackValues(primary)[0]);
+      maxOuterFit(DataPoint.stackValues(primary)[1]);
       // Side values.
-      const { left, right } = DataPoint.allValues(data[i]);
       if (left.length > 0) {
         this.leftColumnWidth = HorizontalAxis.sideColumnWidth;
       }
