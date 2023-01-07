@@ -36,12 +36,13 @@ export class HorizontalAxis {
       };
 
       const maxInnerFit = (value) => {
-        console.log('value', value);
         if (
           HorizontalAxis.innerFit(value, Math.abs(value) * scale) &&
-          TextDimension.widthOfWord(value) > maxColumnWidth
+          TextDimension.widthOfWord(value) + 2 * HorizontalAxis.columnPadding >
+            maxColumnWidth
         ) {
-          maxColumnWidth = TextDimension.widthOfWord(value) + 2;
+          maxColumnWidth =
+            TextDimension.labelWidth(value) + 2 * HorizontalAxis.columnPadding;
         }
       };
 
@@ -54,9 +55,7 @@ export class HorizontalAxis {
       maxOuterFit(DataPoint.stackValues(primary)[1]);
       // positive and negative inner values
       if (chartVariant === ColumnChartVariant.STACK) {
-        [...left, ...primary, ...right].forEach((metaDataPoint) =>
-          maxInnerFit(metaDataPoint.value)
-        );
+        primary.forEach((metaDataPoint) => maxInnerFit(metaDataPoint.value));
       }
 
       // Side values.
@@ -94,8 +93,8 @@ export class HorizontalAxis {
     word = word.toString();
     return (
       HorizontalAxis.maxInnerColumnWidth >=
-        TextDimension.widthOfWord(word) + 2 &&
-      rectHeight - 2 * HorizontalAxis.columnPadding >= TextDimension.totalHeight
+        TextDimension.labelWidth(word) + 2 * HorizontalAxis.columnPadding &&
+      TextDimension.totalHeight <= rectHeight - 2 * HorizontalAxis.columnPadding
     );
   }
 

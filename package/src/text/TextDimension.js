@@ -11,6 +11,7 @@ export class TextDimension {
   static actualHeight = 14.67;
   static bottomPadding = 3.33;
   static labelHeight = TextDimension.totalHeight + 1;
+  static labelWidth = (word) => TextDimension.widthOfWord(word) + 2;
 
   /**
    * Calculate the width of ASCII string in `px`.
