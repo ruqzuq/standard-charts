@@ -1,4 +1,5 @@
 import { renderChart } from '../../render/Chart';
+import { ColumnChartVariant } from '../../types/ChartType';
 import { HorizontalAxis } from '../HorizontalAxis';
 import { Column } from './Column';
 
@@ -7,7 +8,13 @@ export function StackColumnChart(chart, minScale) {
 
   const { scale, axisOrigin } = minScale;
 
-  const axis = new HorizontalAxis(axisOrigin.x, axisOrigin.y, data);
+  const axis = new HorizontalAxis(
+    axisOrigin.x,
+    axisOrigin.y,
+    data,
+    scale,
+    ColumnChartVariant.STACK
+  );
 
   const renderRects = data.map((element, index) => {
     const column = new Column({

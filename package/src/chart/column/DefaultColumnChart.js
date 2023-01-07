@@ -7,7 +7,7 @@ export function DefaultColumnChart(chart, minScale) {
 
   const { scale, axisOrigin } = minScale;
 
-  const axis = new HorizontalAxis(axisOrigin.x, axisOrigin.y, data);
+  const axis = new HorizontalAxis(axisOrigin.x, axisOrigin.y, data, scale);
 
   const renderRects = data.map((element, index) => {
     const column = new Column({

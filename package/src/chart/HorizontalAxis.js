@@ -1,5 +1,6 @@
 import { renderRect } from '../render/Rect';
 import { TextDimension } from '../text/TextDimension';
+import { ColumnChartVariant } from '../types/ChartType';
 import { DataPoint } from './Datapoint';
 import { Scale } from './Scale';
 
@@ -10,7 +11,7 @@ export class HorizontalAxis {
   static minInnerColumnWidth = 22;
   static maxInnerColumnWidth = 66;
 
-  constructor(x, y, data, scale) {
+  constructor(x, y, data, scale, chartVariant) {
     this.x = x;
     this.y = y;
     this.dataPointPositions = [];
@@ -34,13 +35,30 @@ export class HorizontalAxis {
         }
       };
 
+      const maxInnerFit = (value) => {
+        console.log('value', value);
+        if (
+          HorizontalAxis.innerFit(value, Math.abs(value) * scale) &&
+          TextDimension.widthOfWord(value) > maxColumnWidth
+        ) {
+          maxColumnWidth = TextDimension.widthOfWord(value) + 2;
+        }
+      };
+
       const { left, primary, right } = DataPoint.allValues(data[i]);
 
       // key
       maxOuterFit(key);
-      // positive and negative values
+      // positive and negative stack values
       maxOuterFit(DataPoint.stackValues(primary)[0]);
       maxOuterFit(DataPoint.stackValues(primary)[1]);
+      // positive and negative inner values
+      if (chartVariant === ColumnChartVariant.STACK) {
+        [...left, ...primary, ...right].forEach((metaDataPoint) =>
+          maxInnerFit(metaDataPoint.value)
+        );
+      }
+
       // Side values.
       if (left.length > 0) {
         this.leftColumnWidth = HorizontalAxis.sideColumnWidth;
