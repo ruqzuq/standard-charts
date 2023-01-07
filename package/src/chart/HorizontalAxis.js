@@ -7,7 +7,7 @@ import { Scale } from './Scale';
 export class HorizontalAxis {
   //static columnMargin = 4;
   static columnPadding = 1;
-  static sideColumnWidth = 6;
+  static sideColumnWidth = 8;
   static minInnerColumnWidth = 22;
   static maxInnerColumnWidth = 66;
 
