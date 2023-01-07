@@ -16,26 +16,27 @@ export class Scale {
       const dataPoint = data[i];
       const { left, primary, right } = DataPoint.allValues(dataPoint);
 
-      [left, right].forEach((metaDataPoints) => {
-        let positiveStackedHeight = 0;
-        let negativeStackedHeight = 0;
+      const [leftPositiveStackedValue, leftNegativeStackedValue] =
+        DataPoint.stackValues(left);
 
-        metaDataPoints.forEach((metaDataPoint) => {
-          if (metaDataPoint.value > 0) {
-            positiveStackedHeight += metaDataPoint.value;
-          }
-          if (metaDataPoint.value < 0) {
-            negativeStackedHeight += metaDataPoint.value;
-          }
-        });
+      const [rightPositiveStackedValue, rightNegativeStackedValue] =
+        DataPoint.stackValues(right);
 
-        if (positiveStackedHeight > maxSecondaryHeight) {
-          maxSecondaryHeight = positiveStackedHeight;
+      [leftPositiveStackedValue, rightPositiveStackedValue].forEach(
+        (positiveStackedValue) => {
+          if (positiveStackedValue > maxSecondaryHeight) {
+            maxSecondaryHeight = positiveStackedValue;
+          }
         }
-        if (negativeStackedHeight < minSecondaryHeight) {
-          minSecondaryHeight = negativeStackedHeight;
+      );
+
+      [(leftNegativeStackedValue, rightNegativeStackedValue)].forEach(
+        (negativeStackedValue) => {
+          if (negativeStackedValue > maxSecondaryHeight) {
+            maxSecondaryHeight = negativeStackedValue;
+          }
         }
-      });
+      );
 
       const [primaryPositiveStackedValue, primaryNegativeStackedValue] =
         DataPoint.stackValues(primary);
