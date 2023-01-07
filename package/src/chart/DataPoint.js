@@ -2,29 +2,28 @@ import { Scenario } from '../types/Scenario';
 
 export class DataPoint {
   /**
-   * R40A
+   * R40A?
    *
-   * @param {*} dataPoint
-   * @returns {["FC" | "AC" | "PL" | "PY", number]}
+   * @param {*} metaDataPoints
+   * @returns {[number, number]} [positiveStackedValue, negativeStackedValue]
    */
-  static primaryValues(dataPoint) {
-    const { primary } = DataPoint.allValues(dataPoint);
-
+  static stackValues(metaDataPoints) {
     let positiveStackedValue = 0;
     let negativeStackedValue = 0;
 
-    primary.forEach((primary) => {
-      const value = primary.value;
+    for (let i = 0; i < metaDataPoints.length; i++) {
+      const value = metaDataPoints[i].value;
       if (value > 0) {
         positiveStackedValue += value;
       }
       if (value < 0) {
         negativeStackedValue += value;
       }
-    });
+    }
 
     return [positiveStackedValue, negativeStackedValue];
   }
+
   /**
    * R40A
    *

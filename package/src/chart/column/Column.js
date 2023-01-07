@@ -54,17 +54,18 @@ export class Column {
       primaryNegativeStack[primaryNegativeStack.length - 1];
     const firstPrimaryNegative = primaryNegativeStack[0];
 
-    const [primaryPositiveValue, primaryNegativeValue] =
-      DataPoint.primaryValues(dataPoint);
+    const [primaryPositiveStackedValue, primaryNegativeStackedValue] =
+      DataPoint.stackValues(primary);
 
     // Labeling on positive/top side.
     if (lastPrimaryPositive) {
-      const positiveValuePosition =
-        lastPrimaryPositive.axialRect.topWord(primaryPositiveValue);
+      const positiveValuePosition = lastPrimaryPositive.axialRect.topWord(
+        primaryPositiveStackedValue
+      );
       allText.push(
-        HorizontalAxis.outerFit(primaryPositiveValue)
+        HorizontalAxis.outerFit(primaryPositiveStackedValue)
           ? renderText({
-              word: primaryPositiveValue,
+              word: primaryPositiveStackedValue,
               x: positiveValuePosition.x,
               y: positiveValuePosition.y,
               background: 'white',
@@ -90,12 +91,13 @@ export class Column {
 
     // Labeling on negative/bottom side.
     if (lastPrimaryNegative) {
-      const negativeValuePosition =
-        lastPrimaryNegative.axialRect.topWord(primaryNegativeValue);
+      const negativeValuePosition = lastPrimaryNegative.axialRect.topWord(
+        primaryNegativeStackedValue
+      );
       allText.push(
-        HorizontalAxis.outerFit(primaryNegativeValue)
+        HorizontalAxis.outerFit(primaryNegativeStackedValue)
           ? renderText({
-              word: primaryNegativeValue,
+              word: primaryNegativeStackedValue,
               x: negativeValuePosition.x,
               y: negativeValuePosition.y,
               background: 'white',
