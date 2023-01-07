@@ -5,23 +5,23 @@ export class DataPoint {
    * R40A?
    *
    * @param {*} metaDataPoints
-   * @returns {[number, number]} [positiveStackedValue, negativeStackedValue]
+   * @returns {[number, number]} [positiveStackValue, negativeStackValue]
    */
   static stackValues(metaDataPoints) {
-    let positiveStackedValue = 0;
-    let negativeStackedValue = 0;
+    let positiveStackValue = 0;
+    let negativeStackValue = 0;
 
     for (let i = 0; i < metaDataPoints.length; i++) {
       const value = metaDataPoints[i].value;
       if (value > 0) {
-        positiveStackedValue += value;
+        positiveStackValue += value;
       }
       if (value < 0) {
-        negativeStackedValue += value;
+        negativeStackValue += value;
       }
     }
 
-    return [positiveStackedValue, negativeStackedValue];
+    return [positiveStackValue, negativeStackValue];
   }
 
   /**
