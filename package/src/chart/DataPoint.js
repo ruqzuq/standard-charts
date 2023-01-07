@@ -21,6 +21,10 @@ export class DataPoint {
       }
     }
 
+    // Javascript calculations are inaccurate and more than 4 digits are unnecessary.
+    positiveStackValue = Math.round(positiveStackValue * 1000) / 1000;
+    negativeStackValue = Math.round(negativeStackValue * 1000) / 1000;
+
     return [positiveStackValue, negativeStackValue];
   }
 
