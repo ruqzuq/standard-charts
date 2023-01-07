@@ -16,7 +16,7 @@ export class Scale {
       const dataPoint = data[i];
       const { left, primary, right } = DataPoint.allValues(dataPoint);
 
-      [(left, right)].forEach((metaDataPoints) => {
+      [left, right].forEach((metaDataPoints) => {
         let positiveStackedHeight = 0;
         let negativeStackedHeight = 0;
 
