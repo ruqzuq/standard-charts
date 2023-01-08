@@ -25,8 +25,11 @@ export class Column {
       right,
       HorizontalAxis.sideColumnWidth
     );
-    const [primaryPositiveStack, primaryNegativeStack] =
-      this.buildColumns(primary);
+    const [primaryPositiveStack, primaryNegativeStack] = this.buildColumns(
+      primary,
+      0,
+      true
+    );
 
     const [allColumns, allText] = [
       ...leftPositiveStack,
@@ -136,7 +139,7 @@ export class Column {
     return axialRect; // Top Y-Position.
   }
 
-  buildColumns(metaDataPoints, axisOffset = 0) {
+  buildColumns(metaDataPoints, axisOffset = 0, primary) {
     const positiveStack = [];
     const negativeStack = [];
 
@@ -158,6 +161,7 @@ export class Column {
           axisOffset
         ),
         stackIndex,
+        primary,
       });
     }
 
