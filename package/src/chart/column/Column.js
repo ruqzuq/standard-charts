@@ -17,19 +17,21 @@ export class Column {
     this.columnWidth = columnWidth;
     this.scale = scale;
 
-    const [leftPositiveStack, leftNegativeStack] = this.buildColumns(
-      left,
-      -HorizontalAxis.sideColumnWidth
-    );
-    const [rightPositiveStack, rightNegativeStack] = this.buildColumns(
-      right,
-      HorizontalAxis.sideColumnWidth
-    );
-    const [primaryPositiveStack, primaryNegativeStack] = this.buildColumns(
-      primary,
-      0,
-      true
-    );
+    const [leftPositiveStack, leftNegativeStack] = Column.buildColumns({
+      ...props,
+      metaDataPoints: left,
+      xAxisOffset: -HorizontalAxis.sideColumnWidth,
+    });
+    const [rightPositiveStack, rightNegativeStack] = Column.buildColumns({
+      ...props,
+      metaDataPoints: right,
+      xAxisOffset: HorizontalAxis.sideColumnWidth,
+    });
+    const [primaryPositiveStack, primaryNegativeStack] = Column.buildColumns({
+      ...props,
+      metaDataPoints: primary,
+      primary: true,
+    });
 
     const [allColumns, allText] = [
       ...leftPositiveStack,
@@ -127,19 +129,31 @@ export class Column {
     this.render = allColumns + allText;
   }
 
-  buildColumn(value, y, axisOffset) {
+  static buildColumn(props) {
+    const { value, x, y, columnWidth, scale, axisOffset } = props;
+
     const axialRect = new AxialRect(
-      this.x + axisOffset,
+      x + axisOffset,
       y,
-      this.columnWidth,
-      Math.abs(value * this.scale),
+      columnWidth,
+      Math.abs(value * scale),
       value > 0 ? Direction.TOP : Direction.BOTTOM
     );
 
     return axialRect; // Top Y-Position.
   }
 
-  buildColumns(metaDataPoints, axisOffset = 0, primary) {
+  static buildColumns(props) {
+    const {
+      metaDataPoints,
+      x,
+      y,
+      columnWidth,
+      scale,
+      axisOffset = 0,
+      primary,
+    } = props;
+
     const positiveStack = [];
     const negativeStack = [];
 
@@ -155,11 +169,14 @@ export class Column {
         value: value + (lastColumn ? lastColumn.value : 0),
         unstackValue: value,
         scenario,
-        axialRect: this.buildColumn(
+        axialRect: Column.buildColumn({
           value,
-          lastColumn ? lastColumn.axialRect.topPosition().y : this.y,
-          axisOffset
-        ),
+          x: x,
+          y: lastColumn ? lastColumn.axialRect.topPosition().y : y,
+          columnWidth,
+          scale,
+          axisOffset,
+        }),
         stackIndex,
         primary,
       });
