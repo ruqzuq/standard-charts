@@ -78,6 +78,7 @@ export class Representation {
               scenario === Scenario.FC && stackIndex === 0
                 ? valueToRGB(255)
                 : null, // To highlight from the stripes.
+            backgroundOpacity: 0.8,
           })
         : '';
 
