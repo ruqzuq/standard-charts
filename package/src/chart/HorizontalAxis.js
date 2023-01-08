@@ -1,16 +1,17 @@
 import { renderRect } from '../render/Rect';
 import { TextDimension } from '../text/TextDimension';
+import { ColumnChartVariant } from '../types/ChartType';
 import { DataPoint } from './Datapoint';
 import { Scale } from './Scale';
 
 export class HorizontalAxis {
   //static columnMargin = 4;
   static columnPadding = 1;
-  static sideColumnWidth = 6;
+  static sideColumnWidth = 8;
   static minInnerColumnWidth = 22;
   static maxInnerColumnWidth = 66;
 
-  constructor(x, y, data, scale) {
+  constructor(x, y, data, scale, chartVariant) {
     this.x = x;
     this.y = y;
     this.dataPointPositions = [];
@@ -34,13 +35,29 @@ export class HorizontalAxis {
         }
       };
 
+      const maxInnerFit = (value) => {
+        if (
+          HorizontalAxis.innerFit(value, Math.abs(value) * scale) &&
+          TextDimension.widthOfWord(value) + 2 * HorizontalAxis.columnPadding >
+            maxColumnWidth
+        ) {
+          maxColumnWidth =
+            TextDimension.labelWidth(value) + 2 * HorizontalAxis.columnPadding;
+        }
+      };
+
       const { left, primary, right } = DataPoint.allValues(data[i]);
 
       // key
       maxOuterFit(key);
-      // positive and negative values
+      // positive and negative stack values
       maxOuterFit(DataPoint.stackValues(primary)[0]);
       maxOuterFit(DataPoint.stackValues(primary)[1]);
+      // positive and negative inner values
+      if (chartVariant === ColumnChartVariant.STACK) {
+        primary.forEach((metaDataPoint) => maxInnerFit(metaDataPoint.value));
+      }
+
       // Side values.
       if (left.length > 0) {
         this.leftColumnWidth = HorizontalAxis.sideColumnWidth;
@@ -76,8 +93,8 @@ export class HorizontalAxis {
     word = word.toString();
     return (
       HorizontalAxis.maxInnerColumnWidth >=
-        TextDimension.widthOfWord(word) + 2 &&
-      rectHeight - 2 * HorizontalAxis.columnPadding >= TextDimension.totalHeight
+        TextDimension.labelWidth(word) + 2 * HorizontalAxis.columnPadding &&
+      TextDimension.totalHeight <= rectHeight - 2 * HorizontalAxis.columnPadding
     );
   }
 

@@ -16,39 +16,39 @@ export class Scale {
       const dataPoint = data[i];
       const { left, primary, right } = DataPoint.allValues(dataPoint);
 
-      const [leftPositiveStackedValue, leftNegativeStackedValue] =
+      const [leftPositiveStackValue, leftNegativeStackValue] =
         DataPoint.stackValues(left);
 
-      const [rightPositiveStackedValue, rightNegativeStackedValue] =
+      const [rightPositiveStackValue, rightNegativeStackValue] =
         DataPoint.stackValues(right);
 
-      [leftPositiveStackedValue, rightPositiveStackedValue].forEach(
-        (positiveStackedValue) => {
-          if (positiveStackedValue > maxSecondaryHeight) {
-            maxSecondaryHeight = positiveStackedValue;
+      [leftPositiveStackValue, rightPositiveStackValue].forEach(
+        (positiveStackValue) => {
+          if (positiveStackValue > maxSecondaryHeight) {
+            maxSecondaryHeight = positiveStackValue;
           }
         }
       );
 
-      [leftNegativeStackedValue, rightNegativeStackedValue].forEach(
-        (negativeStackedValue) => {
-          if (negativeStackedValue > maxSecondaryHeight) {
-            maxSecondaryHeight = negativeStackedValue;
+      [leftNegativeStackValue, rightNegativeStackValue].forEach(
+        (negativeStackValue) => {
+          if (negativeStackValue > maxSecondaryHeight) {
+            maxSecondaryHeight = negativeStackValue;
           }
         }
       );
 
-      const [primaryPositiveStackedValue, primaryNegativeStackedValue] =
+      const [primaryPositiveStackValue, primaryNegativeStackValue] =
         DataPoint.stackValues(primary);
 
-      if (primaryPositiveStackedValue > maxPrimaryHeight[0]) {
-        maxPrimaryHeight = [primaryPositiveStackedValue, 1]; // Value label.
+      if (primaryPositiveStackValue > maxPrimaryHeight[0]) {
+        maxPrimaryHeight = [primaryPositiveStackValue, 1]; // Value label.
       }
-      if (primaryNegativeStackedValue < minPrimaryHeight[0]) {
-        if (primaryPositiveStackedValue === 0) {
-          minPrimaryHeight = [primaryNegativeStackedValue, 1];
+      if (primaryNegativeStackValue < minPrimaryHeight[0]) {
+        if (primaryPositiveStackValue === 0) {
+          minPrimaryHeight = [primaryNegativeStackValue, 1];
         } else {
-          minPrimaryHeight = [primaryNegativeStackedValue, 2];
+          minPrimaryHeight = [primaryNegativeStackValue, 2];
         }
       }
     }

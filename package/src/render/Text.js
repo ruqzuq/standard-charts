@@ -9,6 +9,7 @@ export function renderText(props = {}) {
     bold = false,
     color = 'rgb(0,0,0)',
     background,
+    backgroundOpacity = 0.5,
   } = props;
 
   return `${
@@ -19,7 +20,7 @@ export function renderText(props = {}) {
           height: TextDimension.totalHeight,
           width: TextDimension.widthOfWord(word) + 2,
           fill: background,
-          opacity: 0.5,
+          opacity: backgroundOpacity,
         })
       : ''
   }
