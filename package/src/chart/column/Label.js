@@ -2,6 +2,7 @@ import { renderLine } from '../../render/Line';
 import { renderText } from '../../render/Text';
 import { TextDimension } from '../../text/TextDimension';
 import { DataPoint } from '../Datapoint';
+import { HorizontalAxis } from '../HorizontalAxis';
 import { Scale } from '../Scale';
 import { Column } from './Column';
 
@@ -34,12 +35,26 @@ export class Label {
       ...labels.map((label) => TextDimension.labelWidth(label))
     );
 
-    // Values to be labeled.
-    const { primary } = DataPoint.allValues(
+    const { left, primary, right } = DataPoint.allValues(
       side === 'LEFT' ? data[0] : data[data.length - 1]
     );
-    let unjustifyMetaDataPoints = primary.slice(0, labels.length);
-    let justifyMetaDataPoints = primary.slice(0, labels.length);
+
+    // `metaDataPoints` to be labeled.
+    const targetMetaDataPoints = [];
+    let targetDataPointOffset = 0;
+
+    if (side === 'LEFT' && left.length > 0) {
+      targetMetaDataPoints.push(...left);
+      targetDataPointOffset = -HorizontalAxis.sideColumnWidth;
+    } else if (side === 'RIGHT' && right.length > 0) {
+      targetMetaDataPoints.push(...right);
+      targetDataPointOffset = HorizontalAxis.sideColumnWidth;
+    } else {
+      targetMetaDataPoints.push(...primary);
+    }
+
+    let unjustifyMetaDataPoints = targetMetaDataPoints.slice(0, labels.length);
+    let justifyMetaDataPoints = targetMetaDataPoints.slice(0, labels.length);
 
     // Minimum guaranteed size for `TextDimension.labelHeight`.
     justifyMetaDataPoints = justifyMetaDataPoints.map(
@@ -80,10 +95,10 @@ export class Label {
       Column.buildColumns({
         metaDataPoints: unjustifyMetaDataPoints,
         x:
-          side === 'LEFT'
+          (side === 'LEFT'
             ? axis.dataPointPositions[0] + sideExtensionOffset
             : axis.dataPointPositions[axis.dataPointPositions.length - 1] +
-              leftExtensionOffset,
+              leftExtensionOffset) + targetDataPointOffset,
         y: axisOrigin.y,
         columnWidth: axis.columnWidth,
         scale,
