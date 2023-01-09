@@ -20,12 +20,12 @@ export class Column {
     const [leftPositiveStack, leftNegativeStack] = Column.buildColumns({
       ...props,
       metaDataPoints: left,
-      xAxisOffset: -HorizontalAxis.sideColumnWidth,
+      axisOffset: -HorizontalAxis.sideColumnWidth,
     });
     const [rightPositiveStack, rightNegativeStack] = Column.buildColumns({
       ...props,
       metaDataPoints: right,
-      xAxisOffset: HorizontalAxis.sideColumnWidth,
+      axisOffset: HorizontalAxis.sideColumnWidth,
     });
     const [primaryPositiveStack, primaryNegativeStack] = Column.buildColumns({
       ...props,
