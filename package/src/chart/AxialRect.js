@@ -95,6 +95,56 @@ export class AxialRect {
   }
 
   /**
+   * R9
+   *
+   * @param {-1 | 1} sign
+   *
+   * @returns {{x: number, y: number}}
+   */
+  sidePosition(sign) {
+    switch (this.direction) {
+      case Direction.LEFT:
+        return {
+          x: this.x - this.height / 2,
+          y: this.y + sign * (this.width / 2),
+        };
+      case Direction.RIGHT:
+        return {
+          x: this.x + this.height / 2,
+          y: this.y + sign * (this.width / 2),
+        };
+      case Direction.TOP:
+        return {
+          x: this.x + sign * (this.width / 2),
+          y: this.y - this.height / 2,
+        };
+      case Direction.BOTTOM:
+        return {
+          x: this.x + sign * (this.width / 2),
+          y: this.y + this.height / 2,
+        };
+    }
+  }
+
+  /**
+   * R9
+   *
+   * @returns {{x: number, y: number}}
+   */
+  leftPosition() {
+    return this.sidePosition(-1);
+  }
+
+  /**
+   * R9
+   *
+   * @returns {{x: number, y: number}}
+   */
+  rightPosition() {
+    return this.sidePosition(1);
+  }
+
+  /**
    * R7
    *
    * @param {string} word

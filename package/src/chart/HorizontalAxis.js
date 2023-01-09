@@ -109,9 +109,9 @@ export class HorizontalAxis {
     );
   }
 
-  render() {
+  render(leftExtensionOffset = 0) {
     return renderRect({
-      x: this.x,
+      x: this.x + leftExtensionOffset,
       y: this.y - 1, // The actual axis is between the `2px`.
       width: this.width,
       height: 2,

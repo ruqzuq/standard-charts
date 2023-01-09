@@ -2,10 +2,10 @@ import { renderChart } from '../../render/Chart';
 import { HorizontalAxis } from '../HorizontalAxis';
 import { Column } from './Column';
 
-export function DefaultColumnChart(chart, minScale) {
+export function DefaultColumnChart(chart, finalScale) {
   const { data, height = 100 } = chart;
 
-  const { scale, axisOrigin } = minScale;
+  const { scale, axisOrigin } = finalScale;
 
   const axis = new HorizontalAxis(axisOrigin.x, axisOrigin.y, data, scale);
 
