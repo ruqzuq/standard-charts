@@ -1,4 +1,4 @@
-import { rendlerLine } from '../../render/Line';
+import { renderLine } from '../../render/Line';
 import { renderText } from '../../render/Text';
 import { TextDimension } from '../../text/TextDimension';
 import { DataPoint } from '../Datapoint';
@@ -159,7 +159,7 @@ export class Label {
 
       if (!alignToUnjustifyCenter) {
         renderLabels.push(
-          rendlerLine({
+          renderLine({
             startPosition:
               side === 'LEFT'
                 ? unjustifyColumns[index].axialRect.leftPosition()
