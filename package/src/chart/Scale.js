@@ -86,6 +86,11 @@ export class Scale {
 
     return {
       scale,
+      heights: {
+        actualHeight,
+        positiveHeight,
+        negativeHeight,
+      },
       axisOrigin: {
         x: Scale.chartPadding,
         y: Scale.chartPadding + positiveMargin + positiveHeight * scale,

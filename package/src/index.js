@@ -36,7 +36,7 @@ export default function StandardCharts(charts) {
     const chart = charts[i];
     const { chartType, chartVariant } = chart;
 
-    const scale = scales[i];
+    const chartSpecificScale = scales[i];
 
     switch (chartType) {
       case ChartType.COLUMN:
@@ -44,16 +44,16 @@ export default function StandardCharts(charts) {
           case ColumnChartVariant.STACK:
             renderedCharts.push(
               StackColumnChart(chart, {
+                ...chartSpecificScale,
                 scale: minScale,
-                axisOrigin: scale.axisOrigin,
               })
             );
             break;
           default:
             renderedCharts.push(
               DefaultColumnChart(chart, {
+                ...chartSpecificScale,
                 scale: minScale,
-                axisOrigin: scale.axisOrigin,
               })
             );
         }
