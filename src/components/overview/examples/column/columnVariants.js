@@ -3,7 +3,9 @@ import default_multipleScenarios from './default/multipleScenarios.json';
 import default_negativeScenarios from './default/negativeScenarios.json';
 import default_simple from './default/simple.json';
 import default_yearScenarios from './default/yearScenarios.json';
+import stack_complexLabel from './stack/complexLabel.json';
 import stack_simple from './stack/simple.json';
+import stack_simpleLabel from './stack/simpleLabel.json';
 
 export const columnVariants = [
   {
@@ -18,6 +20,6 @@ export const columnVariants = [
   },
   {
     variant: 'Stack',
-    examples: [stack_simple],
+    examples: [stack_simple, stack_simpleLabel, stack_complexLabel],
   },
 ];

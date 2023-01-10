@@ -7,8 +7,7 @@ const useStyles = createUseStyles(({ theme }) => ({
   button: {
     //backgroundColor: theme.debug(),
     width: '150px',
-    height: '100px',
-    padding: '5px',
+    height: '107px',
     float: 'left',
   },
 }));
@@ -20,7 +19,7 @@ export function Example(props) {
 
   return (
     <Button
-      width="200px"
+      width="150px"
       height="100px"
       style={classes.button}
       onClick={onClick}

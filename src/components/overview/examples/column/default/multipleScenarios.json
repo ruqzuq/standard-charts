@@ -1,6 +1,6 @@
 {
   "chartType": "COLUMN",
-  "height": 290,
+  "height": 306,
   "data": [
     { "key": "Jan", "PY": 320, "AC": 351, "PL": 320 },
     { "key": "Feb", "PY": 294, "AC": 280, "PL": 318 },
