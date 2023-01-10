@@ -8,6 +8,7 @@ const useStyles = createUseStyles(({ theme }) => ({
     //backgroundColor: theme.debug(),
     width: '150px',
     height: '107px',
+    padding: '4px',
     float: 'left',
   },
 }));
