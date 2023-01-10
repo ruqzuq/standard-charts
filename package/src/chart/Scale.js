@@ -6,8 +6,14 @@ export class Scale {
 
   static DefaultColumn(data, totalHeight) {
     // second is number of key/value-labels
-    let maxPrimaryValue = [0, 1];
-    let minPrimaryValue = [0, 1];
+    let maxPrimaryValue = {
+      value: 0,
+      labels: 1,
+    };
+    let minPrimaryValue = {
+      value: 0,
+      labels: 1,
+    };
 
     let maxSecondaryValue = 0;
     let minSecondaryValue = 0;
@@ -41,60 +47,62 @@ export class Scale {
       const [primaryPositiveStackValue, primaryNegativeStackValue] =
         DataPoint.stackValues(primary);
 
-      if (primaryPositiveStackValue > maxPrimaryValue[0]) {
-        maxPrimaryValue = [primaryPositiveStackValue, 1]; // Value label.
+      if (primaryPositiveStackValue > maxPrimaryValue.value) {
+        maxPrimaryValue = {
+          value: primaryPositiveStackValue,
+          labels: 1,
+        }; // `value` label.
       }
-      if (primaryNegativeStackValue < minPrimaryValue[0]) {
-        if (primaryPositiveStackValue === 0) {
-          minPrimaryValue = [primaryNegativeStackValue, 1];
-        } else {
-          minPrimaryValue = [primaryNegativeStackValue, 2];
-        }
+      if (primaryNegativeStackValue < minPrimaryValue.value) {
+        minPrimaryValue = {
+          value: primaryNegativeStackValue,
+          labels: primaryPositiveStackValue === 0 ? 1 : 2, // `key`, `value`/`key` label.
+        };
       }
     }
 
-    let actualHeight = totalHeight - 2 * Scale.chartPadding; // Vertical padding
-    let positiveMargin = 0;
-    let maxPositiveValue = 0;
-    let minNegativeValue = 0;
+    /**
+     * R88 a,b
+     */
+    const preActualHeight = totalHeight - 2 * Scale.chartPadding; // Vertical padding
 
-    if (maxSecondaryValue > maxPrimaryValue[0]) {
-      positiveMargin = Math.max(
-        0,
-        maxPrimaryValue[1] * TextDimension.labelHeight - maxSecondaryValue
-      );
-      actualHeight -= positiveMargin;
-      maxPositiveValue = maxSecondaryValue;
-    } else {
-      positiveMargin = maxPrimaryValue[1] * TextDimension.labelHeight;
-      actualHeight -= positiveMargin;
-      maxPositiveValue = maxPrimaryValue[0];
-    }
-    if (minSecondaryValue < minPrimaryValue[0]) {
-      actualHeight -= Math.max(
-        0,
-        minPrimaryValue[1] * TextDimension.labelHeight -
-          Math.abs(minSecondaryValue)
-      );
-      minNegativeValue = minSecondaryValue;
-    } else {
-      actualHeight -= minPrimaryValue[1] * TextDimension.labelHeight;
-      minNegativeValue = minPrimaryValue[0];
-    }
+    const maxPositiveValue = Math.max(maxPrimaryValue.value, maxSecondaryValue);
+    const minNegativeValue = Math.min(minPrimaryValue.value, minSecondaryValue);
 
-    const scale =
-      actualHeight / (maxPositiveValue + Math.abs(minNegativeValue));
+    const preScale =
+      preActualHeight / (maxPositiveValue + Math.abs(minNegativeValue));
+
+    const calcLabelOverflow = (primaryValue, secondaryValue) =>
+      Math.abs(primaryValue.value) >= Math.abs(secondaryValue)
+        ? primaryValue.labels * TextDimension.labelHeight
+        : Math.max(
+            0,
+            Math.abs(primaryValue.value) * preScale +
+              primaryValue.labels * TextDimension.labelHeight -
+              Math.abs(secondaryValue) * preScale
+          );
+
+    const maxOverflow = calcLabelOverflow(maxPrimaryValue, maxSecondaryValue);
+    const minOverflow = calcLabelOverflow(minPrimaryValue, minSecondaryValue);
+
+    const finalScale =
+      ((maxPositiveValue + Math.abs(minNegativeValue)) * preScale -
+        (maxOverflow + minOverflow)) /
+      (maxPositiveValue + Math.abs(minNegativeValue));
+
+    const finalActualHeight =
+      maxPositiveValue * finalScale + Math.abs(minNegativeValue * finalScale);
 
     return {
-      scale,
+      scale: finalScale,
       heights: {
-        actualHeight,
+        actualHeight: finalActualHeight,
         maxPositiveValue,
         minNegativeValue,
       },
       axisOrigin: {
         x: Scale.chartPadding,
-        y: Scale.chartPadding + positiveMargin + maxPositiveValue * scale,
+        y: Scale.chartPadding + maxOverflow + maxPositiveValue * finalScale,
       },
     };
   }
