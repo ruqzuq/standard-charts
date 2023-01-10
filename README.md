@@ -1,11 +1,13 @@
-# Standard-Charts
+<h1 align="center"> Standard-Charts </h1>
 
+<div align="center">
 <a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
 <img src="https://img.shields.io/badge/download-standard--charts-%23009933?style=flat-square">
 </a>
 <a href="https://ruqzuq.com/standard-charts">
 <img src="https://img.shields.io/badge/test-templates-%230066cc?style=flat-square">
 </a>
+</div>
 
 <a href="https://ruqzuq.com/standard-charts" align="center">
 <img src="./src/documentation/banner.png">
@@ -22,7 +24,7 @@ These steps are appropriate for plain JavaScript. Different approaches may be ne
 First, include the library.
 
 ```jsx
-<script src="./standard-charts_v0.1.0.js"></script>
+<script src="./standard-charts_v0.1.2.js"></script>
 ```
 
 Then call the API and include the generated `.svg`.
