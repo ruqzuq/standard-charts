@@ -1,0 +1,15 @@
+{
+  "chartType": "COLUMN",
+  "chartVariant": "STACK",
+  "height": 169,
+  "left": {
+    "extension": "LABEL",
+    "labels": ["Germany", "France", "England", "Netherland"]
+  },
+  "data": [
+    { "key": "20", "PY": [18, 15, 11, 3] },
+    { "key": "21", "PY": [19, 17, 14, 2] },
+    { "key": "22", "AC": [23, 19, 12, 1] },
+    { "key": "23", "FC": [25, 22, 8, 2] }
+  ]
+}
