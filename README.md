@@ -1,7 +1,7 @@
 # Standard-Charts
 
-<a href="https://raw.githubusercontent.com/ruqzuq/standard-charts/main/dist">
-<img src="https://img.shields.io/badge/download-standard--charts_v0.1.0-%23009933?style=flat-square">
+<a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
+<img src="https://img.shields.io/badge/download-standard--charts_v0.1.1-%23009933?style=flat-square">
 </a>
 <a href="https://ruqzuq.com/standard-charts">
 <img src="https://img.shields.io/badge/test-templates-%230066cc?style=flat-square">
