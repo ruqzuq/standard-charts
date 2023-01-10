@@ -6,11 +6,11 @@ export class Scale {
 
   static DefaultColumn(data, totalHeight) {
     // second is number of key/value-labels
-    let maxPrimaryHeight = [0, 1];
-    let minPrimaryHeight = [0, 1];
+    let maxPrimaryValue = [0, 1];
+    let minPrimaryValue = [0, 1];
 
-    let maxSecondaryHeight = 0;
-    let minSecondaryHeight = 0;
+    let maxSecondaryValue = 0;
+    let minSecondaryValue = 0;
 
     for (let i = 0; i < data.length; i++) {
       const dataPoint = data[i];
@@ -24,16 +24,16 @@ export class Scale {
 
       [leftPositiveStackValue, rightPositiveStackValue].forEach(
         (positiveStackValue) => {
-          if (positiveStackValue > maxSecondaryHeight) {
-            maxSecondaryHeight = positiveStackValue;
+          if (positiveStackValue > maxSecondaryValue) {
+            maxSecondaryValue = positiveStackValue;
           }
         }
       );
 
       [leftNegativeStackValue, rightNegativeStackValue].forEach(
         (negativeStackValue) => {
-          if (negativeStackValue > maxSecondaryHeight) {
-            maxSecondaryHeight = negativeStackValue;
+          if (negativeStackValue < minSecondaryValue) {
+            minSecondaryValue = negativeStackValue;
           }
         }
       );
@@ -41,59 +41,60 @@ export class Scale {
       const [primaryPositiveStackValue, primaryNegativeStackValue] =
         DataPoint.stackValues(primary);
 
-      if (primaryPositiveStackValue > maxPrimaryHeight[0]) {
-        maxPrimaryHeight = [primaryPositiveStackValue, 1]; // Value label.
+      if (primaryPositiveStackValue > maxPrimaryValue[0]) {
+        maxPrimaryValue = [primaryPositiveStackValue, 1]; // Value label.
       }
-      if (primaryNegativeStackValue < minPrimaryHeight[0]) {
+      if (primaryNegativeStackValue < minPrimaryValue[0]) {
         if (primaryPositiveStackValue === 0) {
-          minPrimaryHeight = [primaryNegativeStackValue, 1];
+          minPrimaryValue = [primaryNegativeStackValue, 1];
         } else {
-          minPrimaryHeight = [primaryNegativeStackValue, 2];
+          minPrimaryValue = [primaryNegativeStackValue, 2];
         }
       }
     }
 
     let actualHeight = totalHeight - 2 * Scale.chartPadding; // Vertical padding
     let positiveMargin = 0;
-    let positiveHeight = 0;
-    let negativeHeight = 0;
+    let maxPositiveValue = 0;
+    let minNegativeValue = 0;
 
-    if (maxSecondaryHeight > maxPrimaryHeight[0]) {
+    if (maxSecondaryValue > maxPrimaryValue[0]) {
       positiveMargin = Math.max(
         0,
-        maxPrimaryHeight[1] * TextDimension.labelHeight - maxSecondaryHeight
+        maxPrimaryValue[1] * TextDimension.labelHeight - maxSecondaryValue
       );
       actualHeight -= positiveMargin;
-      positiveHeight = maxSecondaryHeight;
+      maxPositiveValue = maxSecondaryValue;
     } else {
-      positiveMargin = maxPrimaryHeight[1] * TextDimension.labelHeight;
+      positiveMargin = maxPrimaryValue[1] * TextDimension.labelHeight;
       actualHeight -= positiveMargin;
-      positiveHeight = maxPrimaryHeight[0];
+      maxPositiveValue = maxPrimaryValue[0];
     }
-    if (minSecondaryHeight < minPrimaryHeight[0]) {
+    if (minSecondaryValue < minPrimaryValue[0]) {
       actualHeight -= Math.max(
         0,
-        minPrimaryHeight[1] * TextDimension.labelHeight -
-          Math.abs(minSecondaryHeight)
+        minPrimaryValue[1] * TextDimension.labelHeight -
+          Math.abs(minSecondaryValue)
       );
-      negativeHeight = minSecondaryHeight;
+      minNegativeValue = minSecondaryValue;
     } else {
-      actualHeight -= minPrimaryHeight[1] * TextDimension.labelHeight;
-      negativeHeight = minPrimaryHeight[0];
+      actualHeight -= minPrimaryValue[1] * TextDimension.labelHeight;
+      minNegativeValue = minPrimaryValue[0];
     }
 
-    const scale = actualHeight / (positiveHeight + Math.abs(negativeHeight));
+    const scale =
+      actualHeight / (maxPositiveValue + Math.abs(minNegativeValue));
 
     return {
       scale,
       heights: {
         actualHeight,
-        positiveHeight,
-        negativeHeight,
+        maxPositiveValue,
+        minNegativeValue,
       },
       axisOrigin: {
         x: Scale.chartPadding,
-        y: Scale.chartPadding + positiveMargin + positiveHeight * scale,
+        y: Scale.chartPadding + positiveMargin + maxPositiveValue * scale,
       },
     };
   }

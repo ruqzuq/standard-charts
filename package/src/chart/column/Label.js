@@ -132,8 +132,8 @@ export class Label {
       DataPoint.stackValues(justifyMetaDataPoints);
 
     const justifyColumnsOffset =
-      (Math.max(0, positiveJustifyStackValue - heights.positiveHeight) +
-        Math.min(0, negativeJustifyStackValue - heights.negativeHeight)) *
+      (Math.max(0, positiveJustifyStackValue - heights.maxPositiveValue) +
+        Math.min(0, negativeJustifyStackValue - heights.minNegativeValue)) *
       scale;
 
     justifyColumns.forEach((justifyColumn) => {
