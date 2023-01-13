@@ -1,6 +1,6 @@
 import { renderChart } from '../../../render/Chart';
-import { ColumnChartVariant } from '../../../types/ChartType';
-import { Column } from '../Column';
+import { ChartType, ColumnChartVariant } from '../../../types/ChartType';
+import { AxialDataPoint } from '../../AxialDataPoint';
 import { ColumnAxis } from '../ColumnAxis';
 import { Label } from '../Label';
 
@@ -52,13 +52,14 @@ export function StackColumnChart(chart, finalScale) {
   });
 
   const renderRects = data.map((element, index) => {
-    const column = new Column({
+    const column = new AxialDataPoint({
       x: axis.dataPointPositions[index] + leftExtensionOffset,
       y: axis.y,
       dataPoint: element,
-      columnWidth: axis.columnWidth,
+      rectWidth: axis.columnWidth,
       scale,
       stack: true,
+      chartType: ChartType.COLUMN,
     });
 
     return column.render;

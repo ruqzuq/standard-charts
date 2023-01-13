@@ -9,7 +9,7 @@ import { Representation } from './Representation';
 
 export class AxialDataPoint {
   constructor(props) {
-    const { x, y, dataPoint, rectWidth, scale, stack, type } = props;
+    const { x, y, dataPoint, rectWidth, scale, stack, chartType } = props;
 
     const { left, primary, right } = DataPoint.allValues(dataPoint);
 
@@ -18,27 +18,27 @@ export class AxialDataPoint {
         ...props,
         metaDataPoints: left,
         axisOffset:
-          type === ChartType.COLUMN
+          chartType === ChartType.COLUMN
             ? -ColumnAxis.secondaryColumnWidth
             : -BarAxis.secondaryBarWidth,
-        type,
+        chartType,
       });
     const [rightPositiveStack, rightNegativeStack] =
       AxialDataPoint.buildMetaDataPoints({
         ...props,
         metaDataPoints: right,
         axisOffset:
-          type === ChartType.COLUMN
+          chartType === ChartType.COLUMN
             ? ColumnAxis.secondaryColumnWidth
             : BarAxis.secondaryBarWidth,
-        type,
+        chartType,
       });
     const [primaryPositiveStack, primaryNegativeStack] =
       AxialDataPoint.buildMetaDataPoints({
         ...props,
         metaDataPoints: primary,
         primary: true,
-        type,
+        chartType,
       });
 
     const [allRects, allLabels] = [
@@ -76,7 +76,8 @@ export class AxialDataPoint {
         primaryPositiveStackValue
       );
       allLabels.push(
-        ColumnAxis.outerFit(primaryPositiveStackValue) || type === ChartType.BAR
+        ColumnAxis.outerFit(primaryPositiveStackValue) ||
+          chartType === ChartType.BAR
           ? renderText({
               word: primaryPositiveStackValue,
               x: positiveValuePosition.x,
@@ -90,7 +91,7 @@ export class AxialDataPoint {
           dataPoint.key
         );
         allLabels.push(
-          ColumnAxis.outerFit(dataPoint.key) || type === ChartType.BAR
+          ColumnAxis.outerFit(dataPoint.key) || chartType === ChartType.BAR
             ? renderText({
                 word: dataPoint.key,
                 x: positiveKeyPosition.x,
@@ -108,7 +109,8 @@ export class AxialDataPoint {
         primaryNegativeStackValue
       );
       allLabels.push(
-        ColumnAxis.outerFit(primaryNegativeStackValue) || type === ChartType.BAR
+        ColumnAxis.outerFit(primaryNegativeStackValue) ||
+          chartType === ChartType.BAR
           ? renderText({
               word: primaryNegativeStackValue,
               x: negativeValuePosition.x,
@@ -121,7 +123,7 @@ export class AxialDataPoint {
         ? lastPrimaryNegative.axialRect.topWord(dataPoint.key)
         : firstPrimaryNegative.axialRect.bottomWord(dataPoint.key);
       allLabels.push(
-        ColumnAxis.outerFit(dataPoint.key) || type === ChartType.BAR
+        ColumnAxis.outerFit(dataPoint.key) || chartType === ChartType.BAR
           ? renderText({
               word: dataPoint.key,
               x: negativeKeyPosition.x,
@@ -138,14 +140,14 @@ export class AxialDataPoint {
   }
 
   static buildMetaDataPoint(props) {
-    const { value, x, y, rectWidth, scale, axisOffset, type } = props;
+    const { value, x, y, rectWidth, scale, axisOffset, chartType } = props;
 
     const axialRect = new AxialRect(
-      x + (type === ChartType.COLUMN ? axisOffset : 0),
-      y + (type === ChartType.BAR ? axisOffset : 0),
+      x + (chartType === ChartType.COLUMN ? axisOffset : 0),
+      y + (chartType === ChartType.BAR ? axisOffset : 0),
       rectWidth,
       Math.abs(value * scale),
-      type === ChartType.COLUMN
+      chartType === ChartType.COLUMN
         ? value > 0
           ? Direction.TOP
           : Direction.BOTTOM
@@ -166,7 +168,7 @@ export class AxialDataPoint {
       scale,
       axisOffset = 0,
       primary,
-      type,
+      chartType,
     } = props;
 
     const positiveStack = [];
@@ -187,17 +189,17 @@ export class AxialDataPoint {
         axialRect: AxialDataPoint.buildMetaDataPoint({
           value,
           x:
-            type === ChartType.COLUMN || !lastColumn
+            chartType === ChartType.COLUMN || !lastColumn
               ? x
               : lastColumn.axialRect.topPosition().x,
           y:
-            type === ChartType.BAR || !lastColumn
+            chartType === ChartType.BAR || !lastColumn
               ? y
               : lastColumn.axialRect.topPosition().y,
           rectWidth,
           scale,
           axisOffset,
-          type,
+          chartType,
         }),
         stackIndex,
         primary,

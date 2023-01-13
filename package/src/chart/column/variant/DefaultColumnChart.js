@@ -1,5 +1,6 @@
 import { renderChart } from '../../../render/Chart';
-import { Column } from '../Column';
+import { ChartType } from '../../../types/ChartType';
+import { AxialDataPoint } from '../../AxialDataPoint';
 import { ColumnAxis } from '../ColumnAxis';
 
 export function DefaultColumnChart(chart, finalScale) {
@@ -10,12 +11,13 @@ export function DefaultColumnChart(chart, finalScale) {
   const axis = new ColumnAxis(axisOrigin.x, axisOrigin.y, data, scale);
 
   const renderRects = data.map((element, index) => {
-    const column = new Column({
+    const column = new AxialDataPoint({
       x: axis.dataPointPositions[index],
       y: axis.y,
       dataPoint: element,
-      columnWidth: axis.columnWidth,
+      rectWidth: axis.columnWidth,
       scale: scale,
+      chartType: ChartType.COLUMN,
     });
 
     return column.render;
