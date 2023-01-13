@@ -1,15 +1,15 @@
-import { renderChart } from '../../render/Chart';
-import { ColumnChartVariant } from '../../types/ChartType';
-import { HorizontalAxis } from '../HorizontalAxis';
-import { Column } from './Column';
-import { Label } from './Label';
+import { renderChart } from '../../../render/Chart';
+import { ColumnChartVariant } from '../../../types/ChartType';
+import { Column } from '../Column';
+import { ColumnAxis } from '../ColumnAxis';
+import { Label } from '../Label';
 
 export function StackColumnChart(chart, finalScale) {
   const { data, height = 100 } = chart;
 
   const { scale, heights, axisOrigin } = finalScale;
 
-  const axis = new HorizontalAxis(
+  const axis = new ColumnAxis(
     axisOrigin.x,
     axisOrigin.y,
     data,

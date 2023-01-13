@@ -2,9 +2,9 @@ import { renderLine } from '../../render/Line';
 import { renderText } from '../../render/Text';
 import { TextDimension } from '../../text/TextDimension';
 import { DataPoint } from '../Datapoint';
-import { HorizontalAxis } from '../HorizontalAxis';
 import { Scale } from '../Scale';
 import { Column } from './Column';
+import { ColumnAxis } from './ColumnAxis';
 
 export class Label {
   /**
@@ -45,10 +45,10 @@ export class Label {
 
     if (side === 'LEFT' && left.length > 0) {
       targetMetaDataPoints.push(...left);
-      targetDataPointOffset = -HorizontalAxis.sideColumnWidth;
+      targetDataPointOffset = -ColumnAxis.sideColumnWidth;
     } else if (side === 'RIGHT' && right.length > 0) {
       targetMetaDataPoints.push(...right);
-      targetDataPointOffset = HorizontalAxis.sideColumnWidth;
+      targetDataPointOffset = ColumnAxis.sideColumnWidth;
     } else {
       targetMetaDataPoints.push(...primary);
     }

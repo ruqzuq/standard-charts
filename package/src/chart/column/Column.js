@@ -2,8 +2,8 @@ import { renderText } from '../../render/Text';
 import { TextDimension } from '../../text/TextDimension';
 import { AxialRect, Direction } from '../AxialRect';
 import { DataPoint } from '../Datapoint';
-import { HorizontalAxis } from '../HorizontalAxis';
 import { Representation } from '../Representation';
+import { ColumnAxis } from './ColumnAxis';
 
 export class Column {
   constructor(props) {
@@ -20,12 +20,12 @@ export class Column {
     const [leftPositiveStack, leftNegativeStack] = Column.buildColumns({
       ...props,
       metaDataPoints: left,
-      axisOffset: -HorizontalAxis.sideColumnWidth,
+      axisOffset: -ColumnAxis.sideColumnWidth,
     });
     const [rightPositiveStack, rightNegativeStack] = Column.buildColumns({
       ...props,
       metaDataPoints: right,
-      axisOffset: HorizontalAxis.sideColumnWidth,
+      axisOffset: ColumnAxis.sideColumnWidth,
     });
     const [primaryPositiveStack, primaryNegativeStack] = Column.buildColumns({
       ...props,
@@ -68,7 +68,7 @@ export class Column {
         primaryPositiveStackValue
       );
       allText.push(
-        HorizontalAxis.outerFit(primaryPositiveStackValue)
+        ColumnAxis.outerFit(primaryPositiveStackValue)
           ? renderText({
               word: primaryPositiveStackValue,
               x: positiveValuePosition.x,
@@ -82,7 +82,7 @@ export class Column {
           dataPoint.key
         );
         allText.push(
-          HorizontalAxis.outerFit(dataPoint.key)
+          ColumnAxis.outerFit(dataPoint.key)
             ? renderText({
                 word: dataPoint.key,
                 x: positiveKeyPosition.x,
@@ -100,7 +100,7 @@ export class Column {
         primaryNegativeStackValue
       );
       allText.push(
-        HorizontalAxis.outerFit(primaryNegativeStackValue)
+        ColumnAxis.outerFit(primaryNegativeStackValue)
           ? renderText({
               word: primaryNegativeStackValue,
               x: negativeValuePosition.x,
@@ -113,7 +113,7 @@ export class Column {
         ? lastPrimaryNegative.axialRect.topWord(dataPoint.key)
         : firstPrimaryNegative.axialRect.bottomWord(dataPoint.key);
       allText.push(
-        HorizontalAxis.outerFit(dataPoint.key)
+        ColumnAxis.outerFit(dataPoint.key)
           ? renderText({
               word: dataPoint.key,
               x: negativeKeyPosition.x,
