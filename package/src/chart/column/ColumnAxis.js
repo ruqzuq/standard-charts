@@ -5,11 +5,10 @@ import { DataPoint } from '../Datapoint';
 import { Scale } from '../Scale';
 
 export class ColumnAxis {
-  //static columnMargin = 4;
   static columnPadding = 1;
-  static sideColumnWidth = 8;
-  static minInnerColumnWidth = 22;
-  static maxInnerColumnWidth = 66;
+  static secondaryColumnWidth = 8;
+  static minPrimaryColumnWidth = 22;
+  static maxPrimaryColumnWidth = 66;
 
   constructor(x, y, data, scale, chartVariant) {
     this.x = x;
@@ -18,8 +17,9 @@ export class ColumnAxis {
     this.scale = scale;
 
     this.leftColumnWidth = 0;
+
     let maxColumnWidth =
-      ColumnAxis.minInnerColumnWidth + 2 * ColumnAxis.columnPadding;
+      ColumnAxis.minPrimaryColumnWidth + 2 * ColumnAxis.columnPadding;
     this.rightColumnWidth = 0;
 
     // Find maxColumnWidth:
@@ -60,10 +60,10 @@ export class ColumnAxis {
 
       // Side values.
       if (left.length > 0) {
-        this.leftColumnWidth = ColumnAxis.sideColumnWidth;
+        this.leftColumnWidth = ColumnAxis.secondaryColumnWidth;
       }
       if (right.length > 0) {
-        this.rightColumnWidth = ColumnAxis.sideColumnWidth;
+        this.rightColumnWidth = ColumnAxis.secondaryColumnWidth;
       }
     }
 
@@ -92,7 +92,7 @@ export class ColumnAxis {
   static innerFit(word, rectHeight) {
     word = word.toString();
     return (
-      ColumnAxis.maxInnerColumnWidth >=
+      ColumnAxis.maxPrimaryColumnWidth >=
         TextDimension.labelWidth(word) + 2 * ColumnAxis.columnPadding &&
       TextDimension.totalHeight <= rectHeight - 2 * ColumnAxis.columnPadding
     );
@@ -104,7 +104,7 @@ export class ColumnAxis {
   static outerFit(word) {
     word = word.toString();
     return (
-      ColumnAxis.maxInnerColumnWidth + 2 * ColumnAxis.columnPadding >=
+      ColumnAxis.maxPrimaryColumnWidth + 2 * ColumnAxis.columnPadding >=
       TextDimension.widthOfWord(word) + 2
     );
   }

@@ -45,10 +45,10 @@ export class Label {
 
     if (side === 'LEFT' && left.length > 0) {
       targetMetaDataPoints.push(...left);
-      targetDataPointOffset = -ColumnAxis.sideColumnWidth;
+      targetDataPointOffset = -ColumnAxis.secondaryColumnWidth;
     } else if (side === 'RIGHT' && right.length > 0) {
       targetMetaDataPoints.push(...right);
-      targetDataPointOffset = ColumnAxis.sideColumnWidth;
+      targetDataPointOffset = ColumnAxis.secondaryColumnWidth;
     } else {
       targetMetaDataPoints.push(...primary);
     }
