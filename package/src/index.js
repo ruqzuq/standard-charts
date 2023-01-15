@@ -16,7 +16,7 @@ export default function StandardCharts(charts) {
   for (let i = 0; i < charts.length; i++) {
     const { chartType, chartVariant, data, height, width } = charts[i];
 
-    let scale = { scale: 1 };
+    let scale = { scale: 1, heights: { actualHeight: height } };
 
     let oldRescale = 0;
     let reScale = 1;
@@ -27,8 +27,12 @@ export default function StandardCharts(charts) {
         case ChartType.COLUMN:
           switch (chartVariant) {
             case ColumnChartVariant.STACK:
-              reScale = 1;
-              scale = Scale.StackColum(charts[i], reScale * height);
+              reScale = ReScale.StackColumn(
+                charts[i],
+                reScale * scale.scale,
+                scale.heights.actualHeight
+              );
+              scale = Scale.StackColumn(charts[i], reScale * height);
               break;
             default:
               reScale = ReScale.DefaultColumn(charts[i], reScale * scale.scale);

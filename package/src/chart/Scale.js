@@ -109,7 +109,7 @@ export class Scale {
     };
   }
 
-  static StackColum(chart, totalHeight) {
+  static StackColumn(chart, totalHeight) {
     return Scale.DefaultColumn(chart, totalHeight);
   }
 

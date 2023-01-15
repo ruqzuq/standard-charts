@@ -196,4 +196,13 @@ export class Label {
       renderLabels,
     };
   }
+
+  static calculateSideExtensionOffset(labels, actualHeight) {
+    // Reduce to fitting number of labels.
+    while (actualHeight < labels.length * TextDimension.labelHeight) {
+      labels.pop();
+    }
+    // Chart is extended sideways.
+    return Math.max(...labels.map((label) => TextDimension.labelWidth(label)));
+  }
 }

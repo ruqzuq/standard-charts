@@ -5,15 +5,15 @@ import { ColumnAxis } from '../ColumnAxis';
 import { Label } from '../Label';
 
 export function StackColumnChart(chart, finalScale) {
-  const { data, height = 100 } = chart;
+  const { data, height = 100, width } = chart;
 
-  const { scale, heights, axisOrigin } = finalScale;
+  const { scale, reScale, heights, axisOrigin } = finalScale;
 
   const axis = new ColumnAxis(
     axisOrigin.x,
     axisOrigin.y,
     data,
-    scale,
+    scale * reScale,
     ColumnChartVariant.STACK
   );
 
@@ -57,7 +57,7 @@ export function StackColumnChart(chart, finalScale) {
       y: axis.y,
       dataPoint: element,
       rectWidth: axis.columnWidth,
-      scale,
+      scale: scale,
       stack: true,
       chartType: ChartType.COLUMN,
     });
@@ -67,7 +67,10 @@ export function StackColumnChart(chart, finalScale) {
 
   return renderChart({
     chart: renderRects + renderExtensions + axis.render(leftExtensionOffset),
+    width:
+      width ?? leftExtensionOffset + axis.chartWidth + rightExtensionOffset,
     height,
-    width: leftExtensionOffset + axis.chartWidth + rightExtensionOffset,
+    viewBoxWidth: leftExtensionOffset + axis.chartWidth + rightExtensionOffset,
+    viewBoxHeight: height * reScale,
   });
 }
