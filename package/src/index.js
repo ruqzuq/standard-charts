@@ -1,5 +1,7 @@
-import { DefaultColumnChart } from './chart/column/DefaultColumnChart';
-import { StackColumnChart } from './chart/column/StackColumnChart';
+import { DefaultBarChart } from './chart/bar/variant/DefaultBarChart';
+import { DefaultColumnChart } from './chart/column/variant/DefaultColumnChart';
+import { StackColumnChart } from './chart/column/variant/StackColumnChart';
+import { ReScale } from './chart/ReScale';
 import { Scale } from './chart/Scale';
 import { ChartType, ColumnChartVariant } from './types/ChartType';
 
@@ -12,18 +14,42 @@ export default function StandardCharts(charts) {
   let minScale = Number.MAX_VALUE;
 
   for (let i = 0; i < charts.length; i++) {
-    const { chartType, chartVariant, data, height } = charts[i];
-    switch (chartType) {
-      case ChartType.COLUMN:
-        switch (chartVariant) {
-          case ColumnChartVariant.STACK:
-            scales.push(Scale.StackColum(data, height));
-            break;
-          default:
-            scales.push(Scale.DefaultColumn(data, height));
-        }
-        break;
+    const { chartType, chartVariant, data, height, width } = charts[i];
+
+    let scale = { scale: 1 };
+
+    let oldRescale = 0;
+    let reScale = 1;
+
+    while (oldRescale != reScale) {
+      oldRescale = reScale;
+      switch (chartType) {
+        case ChartType.COLUMN:
+          switch (chartVariant) {
+            case ColumnChartVariant.STACK:
+              reScale = 1;
+              scale = Scale.StackColum(charts[i], reScale * height);
+              break;
+            default:
+              reScale = ReScale.DefaultColumn(charts[i], reScale * scale.scale);
+              scale = Scale.DefaultColumn(charts[i], reScale * height);
+          }
+          break;
+        case ChartType.BAR:
+          switch (chartVariant) {
+            default:
+              reScale = 1;
+              scale = Scale.DefaultBar(charts[i], reScale * height);
+          }
+          break;
+      }
+      console.log('ITERATION', oldRescale, reScale);
     }
+
+    console.log('finished');
+
+    scale.reScale = reScale;
+    scales.push(scale);
 
     if (scales[i].scale < minScale) {
       minScale = scales[i].scale;
@@ -52,6 +78,17 @@ export default function StandardCharts(charts) {
           default:
             renderedCharts.push(
               DefaultColumnChart(chart, {
+                ...chartSpecificScale,
+                scale: minScale,
+              })
+            );
+        }
+        break;
+      case ChartType.BAR:
+        switch (chartVariant) {
+          default:
+            renderedCharts.push(
+              DefaultBarChart(chart, {
                 ...chartSpecificScale,
                 scale: minScale,
               })

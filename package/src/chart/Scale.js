@@ -4,7 +4,9 @@ import { DataPoint } from './Datapoint';
 export class Scale {
   static chartPadding = 10;
 
-  static DefaultColumn(data, totalHeight) {
+  static DefaultColumn(chart, totalHeight) {
+    const { data } = chart;
+
     // second is number of key/value-labels
     let maxPrimaryValue = {
       value: 0,
@@ -107,7 +109,11 @@ export class Scale {
     };
   }
 
-  static StackColum(data, totalHeight) {
-    return Scale.DefaultColumn(data, totalHeight);
+  static StackColum(chart, totalHeight) {
+    return Scale.DefaultColumn(chart, totalHeight);
+  }
+
+  static DefaultBar(chart, totalHeight) {
+    return Scale.DefaultColumn(chart, totalHeight);
   }
 }

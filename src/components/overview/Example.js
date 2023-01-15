@@ -7,7 +7,7 @@ const useStyles = createUseStyles(({ theme }) => ({
   button: {
     //backgroundColor: theme.debug(),
     width: '150px',
-    height: '107px',
+    height: '100px',
     padding: '4px',
     float: 'left',
   },
@@ -28,8 +28,7 @@ export function Example(props) {
       <img
         src={`data:image/svg+xml;utf8,${StandardCharts(example)}`}
         style={{
-          width: '100%',
-          //backgroundColor: '#669988',
+          backgroundColor: '#669988',
         }}
       />
     </Button>
