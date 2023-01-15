@@ -55,8 +55,8 @@ export default function StandardCharts(charts) {
     scale.reScale = reScale;
     scales.push(scale);
 
-    if (scales[i].scale < minScale) {
-      minScale = scales[i].scale;
+    if (scales[i].scale / reScale < minScale) {
+      minScale = scales[i].scale / reScale;
     }
   }
 

@@ -37,7 +37,7 @@ export function StackColumnChart(chart, finalScale) {
           labels,
           data,
           axis,
-          finalScale,
+          finalScale: { ...finalScale, scale: scale * reScale },
           side,
           leftExtensionOffset,
         });
@@ -57,7 +57,7 @@ export function StackColumnChart(chart, finalScale) {
       y: axis.y,
       dataPoint: element,
       rectWidth: axis.columnWidth,
-      scale: scale,
+      scale: scale * reScale,
       stack: true,
       chartType: ChartType.COLUMN,
     });

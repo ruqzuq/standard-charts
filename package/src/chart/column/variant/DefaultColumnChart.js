@@ -21,7 +21,7 @@ export function DefaultColumnChart(chart, finalScale) {
       y: axis.y,
       dataPoint: element,
       rectWidth: axis.columnWidth,
-      scale: scale,
+      scale: scale * reScale,
       chartType: ChartType.COLUMN,
     });
 
