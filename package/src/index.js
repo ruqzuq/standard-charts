@@ -29,21 +29,21 @@ export default function StandardCharts(charts) {
             case ColumnChartVariant.STACK:
               reScale = ReScale.StackColumn(
                 charts[i],
-                reScale * scale.scale,
+                scale.scale * reScale,
                 scale.heights.actualHeight
               );
-              scale = Scale.StackColumn(charts[i], reScale * height);
+              scale = Scale.StackColumn(charts[i], height * reScale);
               break;
             default:
-              reScale = ReScale.DefaultColumn(charts[i], reScale * scale.scale);
-              scale = Scale.DefaultColumn(charts[i], reScale * height);
+              reScale = ReScale.DefaultColumn(charts[i], scale.scale * reScale);
+              scale = Scale.DefaultColumn(charts[i], height * reScale);
           }
           break;
         case ChartType.BAR:
           switch (chartVariant) {
             default:
-              reScale = 1;
-              scale = Scale.DefaultBar(charts[i], reScale * height);
+              reScale = ReScale.DefaultBar(charts[i], scale.scale * reScale);
+              scale = Scale.DefaultBar(charts[i], width * reScale);
           }
           break;
       }
