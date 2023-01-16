@@ -1,20 +1,28 @@
 import { TextDimension } from '../text/TextDimension';
+import { ChartType } from '../types/ChartType';
 import { DataPoint } from './Datapoint';
 
 export class Scale {
   static chartPadding = 10;
+  static barLabelGap = 10;
 
   static DefaultColumn(chart, totalHeight) {
-    const { data } = chart;
+    const { chartType, data } = chart;
 
     // second is number of key/value-labels
     let maxPrimaryValue = {
       value: 0,
-      labels: 1,
+      labels: [''],
     };
     let minPrimaryValue = {
       value: 0,
-      labels: 1,
+      labels: [
+        data
+          .map((dataPoint) => dataPoint.key)
+          .sort(
+            (a, b) => TextDimension.labelWidth(b) - TextDimension.labelWidth(a)
+          )[0], // Take the widest key label for initial negative key label width.
+      ],
     };
 
     let maxSecondaryValue = 0;
@@ -52,13 +60,16 @@ export class Scale {
       if (primaryPositiveStackValue > maxPrimaryValue.value) {
         maxPrimaryValue = {
           value: primaryPositiveStackValue,
-          labels: 1,
+          labels: [primaryPositiveStackValue],
         }; // `value` label.
       }
       if (primaryNegativeStackValue < minPrimaryValue.value) {
         minPrimaryValue = {
           value: primaryNegativeStackValue,
-          labels: primaryPositiveStackValue === 0 ? 1 : 2, // `key`, `value`/`key` label.
+          labels:
+            primaryPositiveStackValue === 0
+              ? ['Key']
+              : ['Key', primaryNegativeStackValue], // `key`, `value`/`key` label.
         };
       }
     }
@@ -74,13 +85,24 @@ export class Scale {
     const preScale =
       preActualHeight / (maxPositiveValue + Math.abs(minNegativeValue));
 
+    const labelOffset = (labels) =>
+      chartType === ChartType.COLUMN
+        ? labels.length * TextDimension.labelHeight
+        : labels.reduce(
+            (accumulator, currentValue, currentIndex) =>
+              accumulator +
+              TextDimension.labelWidth(currentValue) +
+              (currentIndex > 0 ? Scale.barLabelGap : 0),
+            0
+          );
+
     const calcLabelOverflow = (primaryValue, secondaryValue) =>
       Math.abs(primaryValue.value) >= Math.abs(secondaryValue)
-        ? primaryValue.labels * TextDimension.labelHeight
+        ? labelOffset(primaryValue.labels)
         : Math.max(
             0,
             Math.abs(primaryValue.value) * preScale +
-              primaryValue.labels * TextDimension.labelHeight -
+              labelOffset(primaryValue.labels) -
               Math.abs(secondaryValue) * preScale
           );
 
@@ -103,8 +125,16 @@ export class Scale {
         minNegativeValue,
       },
       axisOrigin: {
-        x: Scale.chartPadding,
-        y: Scale.chartPadding + maxOverflow + maxPositiveValue * finalScale,
+        x:
+          Scale.chartPadding +
+          (chartType === ChartType.BAR
+            ? minOverflow + Math.abs(minNegativeValue) * finalScale
+            : 0),
+        y:
+          Scale.chartPadding +
+          (chartType === ChartType.COLUMN
+            ? maxOverflow + maxPositiveValue * finalScale
+            : 0),
       },
     };
   }
