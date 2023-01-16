@@ -1,3 +1,4 @@
+import { BarAxis } from './bar/BarAxis';
 import { ColumnAxis } from './column/ColumnAxis';
 import { Label } from './column/Label';
 import { Scale } from './Scale';
@@ -55,6 +56,20 @@ export class ReScale {
 
     const reScale =
       (leftExtensionOffset + axis.chartWidth + rightExtensionOffset) / width;
+
+    return reScale;
+  }
+
+  static DefaultBar(chart, scale) {
+    const { height, data } = chart;
+
+    if (!height) {
+      return 1;
+    }
+
+    const axis = new BarAxis(0, Scale.chartPadding, data, scale);
+
+    const reScale = axis.chartWidth / height;
 
     return reScale;
   }
