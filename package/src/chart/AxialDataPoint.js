@@ -6,6 +6,7 @@ import { BarAxis } from './bar/BarAxis';
 import { ColumnAxis } from './column/ColumnAxis';
 import { DataPoint } from './Datapoint';
 import { Representation } from './Representation';
+import { Scale } from './Scale';
 
 export class AxialDataPoint {
   constructor(props) {
@@ -126,10 +127,17 @@ export class AxialDataPoint {
         ColumnAxis.outerFit(dataPoint.key) || chartType === ChartType.BAR
           ? renderText({
               word: dataPoint.key,
-              x: negativeKeyPosition.x,
+              x:
+                negativeKeyPosition.x +
+                (chartType === ChartType.BAR && lastPrimaryPositive
+                  ? -TextDimension.labelWidth(primaryNegativeStackValue) -
+                    Scale.barLabelGap
+                  : 0),
               y:
                 negativeKeyPosition.y +
-                (lastPrimaryPositive ? TextDimension.labelHeight : 0),
+                (chartType === ChartType.COLUMN && lastPrimaryPositive
+                  ? TextDimension.labelHeight
+                  : 0),
               background: 'white',
             })
           : ''
