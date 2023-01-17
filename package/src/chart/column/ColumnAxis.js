@@ -7,8 +7,8 @@ import { Scale } from '../Scale';
 export class ColumnAxis {
   static columnPadding = 1;
   static secondaryColumnWidth = 8;
-  static minPrimaryColumnWidth = 22;
-  static maxPrimaryColumnWidth = 66;
+  static minPrimaryColumnWidth = 18;
+  static maxPrimaryColumnWidth = 88;
 
   constructor(x, y, data, scale, chartVariant) {
     this.x = x;
