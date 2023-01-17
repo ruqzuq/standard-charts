@@ -10,7 +10,6 @@ const useStyles = createUseStyles(({ theme }) => ({
     height: '100px',
     padding: '4px',
     float: 'left',
-    marginLeft: '150px',
   },
 }));
 
@@ -34,9 +33,11 @@ export function Example(props) {
         <img
           key={chart.slice(0, 30)}
           src={`data:image/svg+xml;utf8,${chart}`}
-          style={{
-            backgroundColor: '#669988',
-          }}
+          style={
+            {
+              //backgroundColor: '#669988',
+            }
+          }
         />
       ))}
     </Button>
