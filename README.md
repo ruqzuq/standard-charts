@@ -4,13 +4,18 @@
 <a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
 <img src="https://img.shields.io/badge/download-standard--charts-%23009933?style=flat-square">
 </a>
+
+<a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
+<img src="https://img.shields.io/github/size/ruqzuq/standard-charts/dist/standard-charts_v0.1.3.js?style=flat-square">
+</a>
+
 <a href="https://ruqzuq.com/standard-charts">
-<img src="https://img.shields.io/badge/test-templates-%230066cc?style=flat-square">
+<img src="https://img.shields.io/badge/see-templates-%230022aa?style=flat-square">
 </a>
 </div>
 
 <a href="https://ruqzuq.com/standard-charts" align="center">
-<img src="./src/documentation/banner.png">
+<img src="./homepage/documentation/banner.png">
 </a>
 
 [Standard-Charts](https://ruqzuq.com/standard-charts) is an open-source chart-library inspired by **IBCS** (unlicensed)[1]. It empowers developers to unite modern and timeless corporate financial visualization.
@@ -24,7 +29,7 @@ These steps are appropriate for plain JavaScript. Different approaches may be ne
 First, include the library.
 
 ```jsx
-<script src="./standard-charts_v0.1.2.js"></script>
+<script src="./standard-charts_v0.1.3.js"></script>
 ```
 
 Then call the API and include the generated `.svg`.
@@ -51,8 +56,12 @@ Then call the API and include the generated `.svg`.
 Now this trivial column chart should appear:
 
 <div align="center">
-<img src="./src/documentation/trivialExample.svg" style="background-color:white;">
+<img src="./homepage/documentation/trivialExample.svg" style="background-color:white;">
 </div>
+
+## License
+
+The [package](https://github.com/ruqzuq/standard-charts/tree/main/package) and the downloadable [distributions](https://github.com/ruqzuq/standard-charts/tree/main/dist) are licensed under the _MIT License_. Everything else, including the homepage in this repository, is not licensed and unauthorized use/modification/distribution constitutes a legal violation.
 
 ## References
 
