@@ -68,7 +68,7 @@ export class Scale {
           value: primaryNegativeStackValue,
           labels:
             primaryPositiveStackValue === 0
-              ? [dataPoint.key]
+              ? [primaryNegativeStackValue]
               : [dataPoint.key, primaryNegativeStackValue], // `key`, `value`/`key` label.
         };
       }
