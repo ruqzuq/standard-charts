@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SvgFont } from '../text/svgFont';
+import { SvgFont } from '../../package/src/text/SvgFont';
 
 function renderRect(props = {}) {
   const { width = 10, height = 10, x = 0, y = 0 } = props;
