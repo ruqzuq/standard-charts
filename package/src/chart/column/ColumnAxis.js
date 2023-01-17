@@ -1,15 +1,14 @@
-import { renderRect } from '../render/Rect';
-import { TextDimension } from '../text/TextDimension';
-import { ColumnChartVariant } from '../types/ChartType';
-import { DataPoint } from './Datapoint';
-import { Scale } from './Scale';
+import { renderRect } from '../../render/Rect';
+import { TextDimension } from '../../text/TextDimension';
+import { ColumnChartVariant } from '../../types/ChartType';
+import { DataPoint } from '../Datapoint';
+import { Scale } from '../Scale';
 
-export class HorizontalAxis {
-  //static columnMargin = 4;
+export class ColumnAxis {
   static columnPadding = 1;
-  static sideColumnWidth = 8;
-  static minInnerColumnWidth = 22;
-  static maxInnerColumnWidth = 66;
+  static secondaryColumnWidth = 8;
+  static minPrimaryColumnWidth = 22;
+  static maxPrimaryColumnWidth = 66;
 
   constructor(x, y, data, scale, chartVariant) {
     this.x = x;
@@ -18,8 +17,9 @@ export class HorizontalAxis {
     this.scale = scale;
 
     this.leftColumnWidth = 0;
+
     let maxColumnWidth =
-      HorizontalAxis.minInnerColumnWidth + 2 * HorizontalAxis.columnPadding;
+      ColumnAxis.minPrimaryColumnWidth + 2 * ColumnAxis.columnPadding;
     this.rightColumnWidth = 0;
 
     // Find maxColumnWidth:
@@ -28,7 +28,7 @@ export class HorizontalAxis {
 
       const maxOuterFit = (word) => {
         if (
-          HorizontalAxis.outerFit(word) &&
+          ColumnAxis.outerFit(word) &&
           TextDimension.widthOfWord(word) > maxColumnWidth
         ) {
           maxColumnWidth = TextDimension.widthOfWord(word);
@@ -37,12 +37,12 @@ export class HorizontalAxis {
 
       const maxInnerFit = (value) => {
         if (
-          HorizontalAxis.innerFit(value, Math.abs(value) * scale) &&
-          TextDimension.widthOfWord(value) + 2 * HorizontalAxis.columnPadding >
+          ColumnAxis.innerFit(value, Math.abs(value) * scale) &&
+          TextDimension.widthOfWord(value) + 2 * ColumnAxis.columnPadding >
             maxColumnWidth
         ) {
           maxColumnWidth =
-            TextDimension.labelWidth(value) + 2 * HorizontalAxis.columnPadding;
+            TextDimension.labelWidth(value) + 2 * ColumnAxis.columnPadding;
         }
       };
 
@@ -60,14 +60,14 @@ export class HorizontalAxis {
 
       // Side values.
       if (left.length > 0) {
-        this.leftColumnWidth = HorizontalAxis.sideColumnWidth;
+        this.leftColumnWidth = ColumnAxis.secondaryColumnWidth;
       }
       if (right.length > 0) {
-        this.rightColumnWidth = HorizontalAxis.sideColumnWidth;
+        this.rightColumnWidth = ColumnAxis.secondaryColumnWidth;
       }
     }
 
-    this.columnWidth = maxColumnWidth + 2 * HorizontalAxis.columnPadding;
+    this.columnWidth = maxColumnWidth + 2 * ColumnAxis.columnPadding;
     this.columnMargin = maxColumnWidth / 6; // Column margin is dynamically.
 
     let tempAxisPosition = x; // Start position
@@ -92,9 +92,9 @@ export class HorizontalAxis {
   static innerFit(word, rectHeight) {
     word = word.toString();
     return (
-      HorizontalAxis.maxInnerColumnWidth >=
-        TextDimension.labelWidth(word) + 2 * HorizontalAxis.columnPadding &&
-      TextDimension.totalHeight <= rectHeight - 2 * HorizontalAxis.columnPadding
+      ColumnAxis.maxPrimaryColumnWidth >=
+        TextDimension.labelWidth(word) + 2 * ColumnAxis.columnPadding &&
+      TextDimension.totalHeight <= rectHeight - 2 * ColumnAxis.columnPadding
     );
   }
 
@@ -104,7 +104,7 @@ export class HorizontalAxis {
   static outerFit(word) {
     word = word.toString();
     return (
-      HorizontalAxis.maxInnerColumnWidth + 2 * HorizontalAxis.columnPadding >=
+      ColumnAxis.maxPrimaryColumnWidth + 2 * ColumnAxis.columnPadding >=
       TextDimension.widthOfWord(word) + 2
     );
   }

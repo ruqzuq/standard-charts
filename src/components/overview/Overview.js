@@ -4,6 +4,7 @@ import { createUseStyles } from '../../theming/createUseStyles';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
 import { ChartType } from './ChartType';
+import { barVariants } from './examples/bar/barVariants';
 import { columnVariants } from './examples/column/ColumnVariants';
 import githubLogo from './githubLogo';
 import { Header } from './Header';
@@ -18,7 +19,7 @@ const useStyles = createUseStyles(({ theme }) => ({
     height: '100%',
   },
   version: {
-    color: '#eeeeee',
+    color: '#dddddd',
     display: 'inline',
     marginLeft: '5px',
   },
@@ -76,6 +77,11 @@ export function Overview(props) {
       <ChartType
         type="Column"
         variants={columnVariants}
+        setSelectedChart={setSelectedChart}
+      />
+      <ChartType
+        type="Bar"
+        variants={barVariants}
         setSelectedChart={setSelectedChart}
       />
     </div>

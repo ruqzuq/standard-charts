@@ -152,7 +152,7 @@ export class AxialRect {
    */
   topWord(word) {
     const topRect = new AxialRect(
-      this.x,
+      this.topPosition().x,
       this.topPosition().y,
       this.width,
       this.direction === Direction.LEFT || this.direction === Direction.RIGHT

@@ -29,7 +29,7 @@ export function Header(props) {
     size = 24,
     thin,
     rightElement,
-    verticalPadding = '5px',
+    verticalPadding = '0px',
   } = props;
 
   const { classes } = useStyles({ size, thin, verticalPadding });

@@ -1,0 +1,14 @@
+{
+  "chartType": "BAR",
+  "height": 100,
+  "width": 150,
+  "data": [
+    { "key": "Germany", "AC": -2.1, "FC": 0.7, "PL": -1.8 },
+    { "key": "France", "AC": -1.2, "FC": 0.2, "PL": -0.4 },
+    { "key": "Italy", "AC": -1.1, "FC": 0.3, "PL": 0.3 },
+    { "key": "Spain", "AC": 0.8, "FC": 0.4, "PL": 2.4 },
+    { "key": "Netherlands", "AC": -0.3, "FC": 0.3, "PL": -0.1 },
+    { "key": "Sweden", "AC": 0.5, "FC": 0.6, "PL": 1.3 },
+    { "key": "Poland", "AC": 0.4, "FC": 0.4, "PL": 0.5 }
+  ]
+}

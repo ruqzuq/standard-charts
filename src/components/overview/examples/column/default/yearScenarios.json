@@ -1,6 +1,7 @@
 {
   "chartType": "COLUMN",
-  "height": 160,
+  "height": 100,
+  "width": 150,
   "data": [
     { "key": "20", "PY": 29 },
     { "key": "21", "PY": 31 },

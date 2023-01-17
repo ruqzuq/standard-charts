@@ -1,7 +1,7 @@
 import { renderRect } from '../render/Rect';
 import { renderText } from '../render/Text';
 import { Scenario } from '../types/Scenario';
-import { HorizontalAxis } from './HorizontalAxis';
+import { ColumnAxis } from './column/ColumnAxis';
 
 export class Representation {
   /**
@@ -69,7 +69,7 @@ export class Representation {
     const renderInnerValueLabel =
       stack &&
       primary &&
-      HorizontalAxis.innerFit(unstackValue, axialRect.draw().height)
+      ColumnAxis.innerFit(unstackValue, axialRect.draw().height)
         ? renderText({
             ...axialRect.centerWord(unstackValue),
             word: unstackValue,

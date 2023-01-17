@@ -1,19 +1,19 @@
-import { renderChart } from '../../render/Chart';
-import { ColumnChartVariant } from '../../types/ChartType';
-import { HorizontalAxis } from '../HorizontalAxis';
-import { Column } from './Column';
-import { Label } from './Label';
+import { renderChart } from '../../../render/Chart';
+import { ChartType, ColumnChartVariant } from '../../../types/ChartType';
+import { AxialDataPoint } from '../../AxialDataPoint';
+import { ColumnAxis } from '../ColumnAxis';
+import { Label } from '../Label';
 
 export function StackColumnChart(chart, finalScale) {
-  const { data, height = 100 } = chart;
+  const { data, height = 100, width } = chart;
 
-  const { scale, heights, axisOrigin } = finalScale;
+  const { scale, reScale, heights, axisOrigin } = finalScale;
 
-  const axis = new HorizontalAxis(
+  const axis = new ColumnAxis(
     axisOrigin.x,
     axisOrigin.y,
     data,
-    scale,
+    scale * reScale,
     ColumnChartVariant.STACK
   );
 
@@ -37,7 +37,7 @@ export function StackColumnChart(chart, finalScale) {
           labels,
           data,
           axis,
-          finalScale,
+          finalScale: { ...finalScale, scale: scale * reScale },
           side,
           leftExtensionOffset,
         });
@@ -52,13 +52,14 @@ export function StackColumnChart(chart, finalScale) {
   });
 
   const renderRects = data.map((element, index) => {
-    const column = new Column({
+    const column = new AxialDataPoint({
       x: axis.dataPointPositions[index] + leftExtensionOffset,
       y: axis.y,
       dataPoint: element,
-      columnWidth: axis.columnWidth,
-      scale,
+      rectWidth: axis.columnWidth,
+      scale: scale * reScale,
       stack: true,
+      chartType: ChartType.COLUMN,
     });
 
     return column.render;
@@ -66,7 +67,10 @@ export function StackColumnChart(chart, finalScale) {
 
   return renderChart({
     chart: renderRects + renderExtensions + axis.render(leftExtensionOffset),
+    width:
+      width ?? leftExtensionOffset + axis.chartWidth + rightExtensionOffset,
     height,
-    width: leftExtensionOffset + axis.chartWidth + rightExtensionOffset,
+    viewBoxWidth: leftExtensionOffset + axis.chartWidth + rightExtensionOffset,
+    viewBoxHeight: height * reScale,
   });
 }

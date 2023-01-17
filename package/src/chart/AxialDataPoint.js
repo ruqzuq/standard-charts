@@ -1,39 +1,48 @@
-import { renderText } from '../../render/Text';
-import { TextDimension } from '../../text/TextDimension';
-import { AxialRect, Direction } from '../AxialRect';
-import { DataPoint } from '../Datapoint';
-import { HorizontalAxis } from '../HorizontalAxis';
-import { Representation } from '../Representation';
+import { renderText } from '../render/Text';
+import { TextDimension } from '../text/TextDimension';
+import { ChartType } from '../types/ChartType';
+import { AxialRect, Direction } from './AxialRect';
+import { BarAxis } from './bar/BarAxis';
+import { ColumnAxis } from './column/ColumnAxis';
+import { DataPoint } from './Datapoint';
+import { Representation } from './Representation';
+import { Scale } from './Scale';
 
-export class Column {
+export class AxialDataPoint {
   constructor(props) {
-    const { x, y, dataPoint, columnWidth, scale, stack } = props;
+    const { x, y, dataPoint, rectWidth, scale, stack, chartType } = props;
 
     const { left, primary, right } = DataPoint.allValues(dataPoint);
 
-    this.x = x;
-    this.y = y;
-    this.dataPoint = dataPoint;
-    this.columnWidth = columnWidth;
-    this.scale = scale;
+    const [leftPositiveStack, leftNegativeStack] =
+      AxialDataPoint.buildMetaDataPoints({
+        ...props,
+        metaDataPoints: left,
+        axisOffset:
+          chartType === ChartType.COLUMN
+            ? -ColumnAxis.secondaryColumnWidth
+            : -BarAxis.secondaryBarWidth,
+        chartType,
+      });
+    const [rightPositiveStack, rightNegativeStack] =
+      AxialDataPoint.buildMetaDataPoints({
+        ...props,
+        metaDataPoints: right,
+        axisOffset:
+          chartType === ChartType.COLUMN
+            ? ColumnAxis.secondaryColumnWidth
+            : BarAxis.secondaryBarWidth,
+        chartType,
+      });
+    const [primaryPositiveStack, primaryNegativeStack] =
+      AxialDataPoint.buildMetaDataPoints({
+        ...props,
+        metaDataPoints: primary,
+        primary: true,
+        chartType,
+      });
 
-    const [leftPositiveStack, leftNegativeStack] = Column.buildColumns({
-      ...props,
-      metaDataPoints: left,
-      axisOffset: -HorizontalAxis.sideColumnWidth,
-    });
-    const [rightPositiveStack, rightNegativeStack] = Column.buildColumns({
-      ...props,
-      metaDataPoints: right,
-      axisOffset: HorizontalAxis.sideColumnWidth,
-    });
-    const [primaryPositiveStack, primaryNegativeStack] = Column.buildColumns({
-      ...props,
-      metaDataPoints: primary,
-      primary: true,
-    });
-
-    const [allColumns, allText] = [
+    const [allRects, allLabels] = [
       ...leftPositiveStack,
       ...leftNegativeStack,
       ...rightPositiveStack,
@@ -41,8 +50,8 @@ export class Column {
       ...primaryPositiveStack,
       ...primaryNegativeStack,
     ]
-      .map((column) =>
-        Representation.renderAxialRectByScenario({ ...column, stack })
+      .map((rect) =>
+        Representation.renderAxialRectByScenario({ ...rect, stack })
       )
       .reduce(
         (accumulator, currentValue) => [
@@ -67,8 +76,9 @@ export class Column {
       const positiveValuePosition = lastPrimaryPositive.axialRect.topWord(
         primaryPositiveStackValue
       );
-      allText.push(
-        HorizontalAxis.outerFit(primaryPositiveStackValue)
+      allLabels.push(
+        ColumnAxis.outerFit(primaryPositiveStackValue) ||
+          chartType === ChartType.BAR
           ? renderText({
               word: primaryPositiveStackValue,
               x: positiveValuePosition.x,
@@ -81,8 +91,8 @@ export class Column {
         const positiveKeyPosition = firstPrimaryPositive.axialRect.bottomWord(
           dataPoint.key
         );
-        allText.push(
-          HorizontalAxis.outerFit(dataPoint.key)
+        allLabels.push(
+          ColumnAxis.outerFit(dataPoint.key) || chartType === ChartType.BAR
             ? renderText({
                 word: dataPoint.key,
                 x: positiveKeyPosition.x,
@@ -99,8 +109,9 @@ export class Column {
       const negativeValuePosition = lastPrimaryNegative.axialRect.topWord(
         primaryNegativeStackValue
       );
-      allText.push(
-        HorizontalAxis.outerFit(primaryNegativeStackValue)
+      allLabels.push(
+        ColumnAxis.outerFit(primaryNegativeStackValue) ||
+          chartType === ChartType.BAR
           ? renderText({
               word: primaryNegativeStackValue,
               x: negativeValuePosition.x,
@@ -112,46 +123,60 @@ export class Column {
       const negativeKeyPosition = lastPrimaryPositive
         ? lastPrimaryNegative.axialRect.topWord(dataPoint.key)
         : firstPrimaryNegative.axialRect.bottomWord(dataPoint.key);
-      allText.push(
-        HorizontalAxis.outerFit(dataPoint.key)
+      allLabels.push(
+        ColumnAxis.outerFit(dataPoint.key) || chartType === ChartType.BAR
           ? renderText({
               word: dataPoint.key,
-              x: negativeKeyPosition.x,
+              x:
+                negativeKeyPosition.x +
+                (chartType === ChartType.BAR && lastPrimaryPositive
+                  ? -TextDimension.labelWidth(primaryNegativeStackValue) -
+                    Scale.barLabelGap
+                  : 0),
               y:
                 negativeKeyPosition.y +
-                (lastPrimaryPositive ? TextDimension.labelHeight : 0),
+                (chartType === ChartType.COLUMN && lastPrimaryPositive
+                  ? TextDimension.labelHeight
+                  : 0),
               background: 'white',
             })
           : ''
       );
     }
 
-    this.render = allColumns + allText;
+    this.render = allRects + allLabels;
   }
 
-  static buildColumn(props) {
-    const { value, x, y, columnWidth, scale, axisOffset } = props;
+  static buildMetaDataPoint(props) {
+    const { value, x, y, rectWidth, scale, axisOffset, chartType } = props;
 
     const axialRect = new AxialRect(
-      x + axisOffset,
-      y,
-      columnWidth,
+      x + (chartType === ChartType.COLUMN ? axisOffset : 0),
+      y + (chartType === ChartType.BAR ? axisOffset : 0),
+      rectWidth,
       Math.abs(value * scale),
-      value > 0 ? Direction.TOP : Direction.BOTTOM
+      chartType === ChartType.COLUMN
+        ? value > 0
+          ? Direction.TOP
+          : Direction.BOTTOM
+        : value > 0
+        ? Direction.RIGHT
+        : Direction.LEFT
     );
 
     return axialRect; // Top Y-Position.
   }
 
-  static buildColumns(props) {
+  static buildMetaDataPoints(props) {
     const {
       metaDataPoints,
       x,
       y,
-      columnWidth,
+      rectWidth,
       scale,
       axisOffset = 0,
       primary,
+      chartType,
     } = props;
 
     const positiveStack = [];
@@ -169,13 +194,20 @@ export class Column {
         value: value + (lastColumn ? lastColumn.value : 0),
         unstackValue: value,
         scenario,
-        axialRect: Column.buildColumn({
+        axialRect: AxialDataPoint.buildMetaDataPoint({
           value,
-          x: x,
-          y: lastColumn ? lastColumn.axialRect.topPosition().y : y,
-          columnWidth,
+          x:
+            chartType === ChartType.COLUMN || !lastColumn
+              ? x
+              : lastColumn.axialRect.topPosition().x,
+          y:
+            chartType === ChartType.BAR || !lastColumn
+              ? y
+              : lastColumn.axialRect.topPosition().y,
+          rectWidth,
           scale,
           axisOffset,
+          chartType,
         }),
         stackIndex,
         primary,

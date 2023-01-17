@@ -1,7 +1,8 @@
 {
   "chartType": "COLUMN",
   "chartVariant": "STACK",
-  "height": 169,
+  "height": 100,
+  "width": 150,
   "left": {
     "extension": "LABEL",
     "labels": ["Germany", "France", "England", "Netherland"]

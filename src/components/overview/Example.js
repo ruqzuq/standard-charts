@@ -7,7 +7,7 @@ const useStyles = createUseStyles(({ theme }) => ({
   button: {
     //backgroundColor: theme.debug(),
     width: '150px',
-    height: '107px',
+    height: '100px',
     padding: '4px',
     float: 'left',
   },
@@ -18,6 +18,10 @@ export function Example(props) {
 
   const { classes } = useStyles();
 
+  const charts = Array.isArray(example)
+    ? StandardCharts(example)
+    : [StandardCharts(example)];
+
   return (
     <Button
       width="150px"
@@ -25,13 +29,17 @@ export function Example(props) {
       style={classes.button}
       onClick={onClick}
     >
-      <img
-        src={`data:image/svg+xml;utf8,${StandardCharts(example)}`}
-        style={{
-          width: '100%',
-          //backgroundColor: '#669988',
-        }}
-      />
+      {charts.map((chart, index) => (
+        <img
+          key={chart.slice(0, 30)}
+          src={`data:image/svg+xml;utf8,${chart}`}
+          style={
+            {
+              //backgroundColor: '#669988',
+            }
+          }
+        />
+      ))}
     </Button>
   );
 }

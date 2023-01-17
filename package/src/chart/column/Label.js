@@ -1,10 +1,11 @@
 import { renderLine } from '../../render/Line';
 import { renderText } from '../../render/Text';
 import { TextDimension } from '../../text/TextDimension';
+import { ChartType } from '../../types/ChartType';
+import { AxialDataPoint } from '../AxialDataPoint';
 import { DataPoint } from '../Datapoint';
-import { HorizontalAxis } from '../HorizontalAxis';
 import { Scale } from '../Scale';
-import { Column } from './Column';
+import { ColumnAxis } from './ColumnAxis';
 
 export class Label {
   /**
@@ -45,10 +46,10 @@ export class Label {
 
     if (side === 'LEFT' && left.length > 0) {
       targetMetaDataPoints.push(...left);
-      targetDataPointOffset = -HorizontalAxis.sideColumnWidth;
+      targetDataPointOffset = -ColumnAxis.secondaryColumnWidth;
     } else if (side === 'RIGHT' && right.length > 0) {
       targetMetaDataPoints.push(...right);
-      targetDataPointOffset = HorizontalAxis.sideColumnWidth;
+      targetDataPointOffset = ColumnAxis.secondaryColumnWidth;
     } else {
       targetMetaDataPoints.push(...primary);
     }
@@ -92,7 +93,7 @@ export class Label {
     }
 
     const [positiveUnjustifyColumns, negativeUnjustifyColumns] =
-      Column.buildColumns({
+      AxialDataPoint.buildMetaDataPoints({
         metaDataPoints: unjustifyMetaDataPoints,
         x:
           (side === 'LEFT'
@@ -100,8 +101,9 @@ export class Label {
             : axis.dataPointPositions[axis.dataPointPositions.length - 1] +
               leftExtensionOffset) + targetDataPointOffset,
         y: axisOrigin.y,
-        columnWidth: axis.columnWidth,
+        rectWidth: axis.columnWidth,
         scale,
+        chartType: ChartType.COLUMN,
       });
     const unjustifyColumns = [
       ...positiveUnjustifyColumns,
@@ -109,7 +111,7 @@ export class Label {
     ];
 
     const [positiveJustifyColumns, negativeJustifyColumns] =
-      Column.buildColumns({
+      AxialDataPoint.buildMetaDataPoints({
         metaDataPoints: justifyMetaDataPoints,
         x:
           side === 'LEFT'
@@ -119,8 +121,9 @@ export class Label {
               axis.width +
               sideExtensionOffset / 2,
         y: axisOrigin.y,
-        columnWidth: sideExtensionOffset,
+        rectWidth: sideExtensionOffset,
         scale,
+        chartType: ChartType.COLUMN,
       });
 
     const justifyColumns = [
@@ -192,5 +195,14 @@ export class Label {
       sideExtensionOffset,
       renderLabels,
     };
+  }
+
+  static calculateSideExtensionOffset(labels, actualHeight) {
+    // Reduce to fitting number of labels.
+    while (actualHeight < labels.length * TextDimension.labelHeight) {
+      labels.pop();
+    }
+    // Chart is extended sideways.
+    return Math.max(...labels.map((label) => TextDimension.labelWidth(label)));
   }
 }

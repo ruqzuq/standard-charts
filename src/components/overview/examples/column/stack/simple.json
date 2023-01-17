@@ -1,7 +1,8 @@
 {
   "chartType": "COLUMN",
   "chartVariant": "STACK",
-  "height": 160,
+  "height": 100,
+  "width": 150,
   "data": [
     { "key": "17", "AC": [13, 9] },
     { "key": "18", "AC": [14, 11] },
