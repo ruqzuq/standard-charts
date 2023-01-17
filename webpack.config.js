@@ -4,7 +4,7 @@ const MonacoEditorWebpackPlugin = require('monaco-editor-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: path.resolve(__dirname, './src/index.js'),
+  entry: path.resolve(__dirname, './homepage/index.js'),
   module: {
     rules: [
       {
@@ -32,7 +32,7 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({ inject: true, template: './src/index.html' }),
+    new HtmlWebpackPlugin({ inject: true, template: './homepage/index.html' }),
     new MonacoEditorWebpackPlugin({
       // available options are documented at https://github.com/microsoft/monaco-editor/blob/main/webpack-plugin/README.md#options
       languages: ['json'],
