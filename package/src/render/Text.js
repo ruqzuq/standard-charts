@@ -29,7 +29,7 @@ export function renderText(props = {}) {
   y="${y}" 
   font-family="Svg" 
   font-weight="${bold ? '700' : '400'}" 
-  font-size="14x" 
+  font-size="14px" 
   letter-spacing="0" 
   fill="${color}">
   ${word}
