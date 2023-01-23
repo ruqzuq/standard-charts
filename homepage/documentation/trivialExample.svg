@@ -1,4 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="122" height="100" version="1.2" >
+<svg xmlns="http://www.w3.org/2000/svg" 
+  width="106" 
+  height="100"
+  viewBox="0 0 106 100"
+  version="1.2" >
     <defs>
         <pattern id="stripes" patternUnits="userSpaceOnUse" width="4" height="4" fill="red" patternTransform="rotate(45)">
             <line x1="0" y="0" x2="0" y2="4" stroke="rgb(65,65,64)" stroke-width="4" />
@@ -13,26 +17,26 @@
     <g >
     <rect 
     
-    fill="rgb(73,73,72)" 
+    fill="rgb(73,73,73)" 
     opacity="1"
     
-    x="14" 
-    y="32.9375" 
-    width="26" 
-    height="38.0625" 
+    x="13.333333333333336" 
+    y="31.3125" 
+    width="22" 
+    height="41.6875" 
     />,<rect 
     
     fill="white" 
     opacity="0.5"
     
-    x="17.009999999999998" 
-    y="14.437500000000002" 
-    width="19.98" 
-    height="18" 
+    x="15.443333333333335" 
+    y="14.8125" 
+    width="17.78" 
+    height="16" 
     />
   <text 
-  x="18.009999999999998" 
-  y="29.1075" 
+  x="16.443333333333335" 
+  y="27.5125" 
   font-family="Svg" 
   font-weight="400" 
   font-size="14px" 
@@ -44,14 +48,14 @@
     fill="white" 
     opacity="0.5"
     
-    x="17.009999999999998" 
-    y="72.5" 
-    width="19.98" 
-    height="18" 
+    x="15.443333333333335" 
+    y="74.5" 
+    width="17.78" 
+    height="16" 
     />
   <text 
-  x="18.009999999999998" 
-  y="87.17" 
+  x="16.443333333333335" 
+  y="87.2" 
   font-family="Svg" 
   font-weight="400" 
   font-size="14px" 
@@ -60,26 +64,26 @@
   20
   </text>,<rect 
     
-    fill="rgb(73,73,72)" 
+    fill="rgb(73,73,73)" 
     opacity="1"
     
-    x="48" 
-    y="30.3125" 
-    width="26" 
-    height="40.6875" 
+    x="42.00000000000001" 
+    y="28.4375" 
+    width="22" 
+    height="44.5625" 
     />,<rect 
     
     fill="white" 
     opacity="0.5"
     
-    x="51.01" 
-    y="11.812500000000002" 
-    width="19.98" 
-    height="18" 
+    x="44.11000000000001" 
+    y="11.9375" 
+    width="17.78" 
+    height="16" 
     />
   <text 
-  x="52.01" 
-  y="26.4825" 
+  x="45.11000000000001" 
+  y="24.6375" 
   font-family="Svg" 
   font-weight="400" 
   font-size="14px" 
@@ -91,14 +95,14 @@
     fill="white" 
     opacity="0.5"
     
-    x="51.01" 
-    y="72.5" 
-    width="19.98" 
-    height="18" 
+    x="44.11000000000001" 
+    y="74.5" 
+    width="17.78" 
+    height="16" 
     />
   <text 
-  x="52.01" 
-  y="87.17" 
+  x="45.11000000000001" 
+  y="87.2" 
   font-family="Svg" 
   font-weight="400" 
   font-size="14px" 
@@ -107,26 +111,26 @@
   21
   </text>,<rect 
     
-    fill="rgb(73,73,72)" 
+    fill="rgb(73,73,73)" 
     opacity="1"
     
-    x="82" 
-    y="29" 
-    width="26" 
-    height="42" 
+    x="70.66666666666667" 
+    y="27" 
+    width="22" 
+    height="46" 
     />,<rect 
     
     fill="white" 
     opacity="0.5"
     
-    x="85.01" 
-    y="10.500000000000002" 
-    width="19.98" 
-    height="18" 
+    x="72.77666666666667" 
+    y="10.5" 
+    width="17.78" 
+    height="16" 
     />
   <text 
-  x="86.01" 
-  y="25.17" 
+  x="73.77666666666667" 
+  y="23.2" 
   font-family="Svg" 
   font-weight="400" 
   font-size="14px" 
@@ -138,14 +142,14 @@
     fill="white" 
     opacity="0.5"
     
-    x="85.01" 
-    y="72.5" 
-    width="19.98" 
-    height="18" 
+    x="72.77666666666667" 
+    y="74.5" 
+    width="17.78" 
+    height="16" 
     />
   <text 
-  x="86.01" 
-  y="87.17" 
+  x="73.77666666666667" 
+  y="87.2" 
   font-family="Svg" 
   font-weight="400" 
   font-size="14px" 
@@ -158,8 +162,8 @@
     opacity="1"
     
     x="10" 
-    y="70" 
-    width="102" 
+    y="72" 
+    width="86" 
     height="2" 
     />
     </g>
