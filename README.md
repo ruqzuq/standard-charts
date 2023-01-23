@@ -6,7 +6,7 @@
 </a>
 
 <a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
-<img src="https://img.shields.io/github/size/ruqzuq/standard-charts/dist/standard-charts_v0.1.3.js?style=flat-square">
+<img src="https://img.shields.io/github/size/ruqzuq/standard-charts/dist/standard-charts_v0.1.4.js?style=flat-square">
 </a>
 
 <a href="https://ruqzuq.com/standard-charts">
@@ -29,7 +29,7 @@ These steps are appropriate for plain JavaScript. Different approaches may be ne
 First, include the library.
 
 ```jsx
-<script src="./standard-charts_v0.1.3.js"></script>
+<script src="./standard-charts_v0.1.4.js"></script>
 ```
 
 Then call the API and include the generated `.svg`.
