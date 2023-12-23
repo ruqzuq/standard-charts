@@ -36,6 +36,16 @@ export class Text {
 
   // Drawing
   draw(context: OffscreenCanvasRenderingContext2D, debug: boolean = false) {
+    context.fillStyle = 'white';
+    context.globalAlpha = 0.5;
+    context.fillRect(
+      this.box.drawX(),
+      this.box.drawY(),
+      this.box.width,
+      this.box.height
+    );
+    context.globalAlpha = 1;
+
     context.font = this.font;
     context.fillStyle = 'black';
     context.fillText(
