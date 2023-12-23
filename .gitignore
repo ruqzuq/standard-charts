@@ -120,3 +120,5 @@ out
 
 # yarn v4
 .yarn
+
+.dist
