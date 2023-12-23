@@ -61,9 +61,22 @@ export class Rect {
     );
   }
   static drawPL(context: OffscreenCanvasRenderingContext2D, box: Box) {
+    context.fillStyle = '#ffffff';
+    context.fillRect(
+      box.drawX() + 1,
+      box.drawY() + 1,
+      box.width - 2,
+      box.height - 2
+    );
+    //
     context.lineWidth = 2;
     context.strokeStyle = '#494949';
-    context.strokeRect(box.drawX(), box.drawY(), box.width, box.height);
+    context.strokeRect(
+      box.drawX() + 1,
+      box.drawY() + 1,
+      box.width - 2,
+      box.height - 2
+    );
   }
 
   static createPinstripeCanvas() {
