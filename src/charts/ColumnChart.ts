@@ -22,6 +22,9 @@ export class ColumnChart extends Chart<ParallelDataType> {
 
   fontSize: number;
 
+  secondaryLeft: boolean;
+  secondaryRight: boolean;
+
   constructor(props: ColumnChartProps) {
     super(props);
 
@@ -32,12 +35,21 @@ export class ColumnChart extends Chart<ParallelDataType> {
       }
     });
 
+    this.secondaryLeft = this.data.some(
+      (dataPoint) => extractParallelValues(dataPoint).left.value
+    );
+    this.secondaryRight = this.data.some(
+      (dataPoint) => extractParallelValues(dataPoint).right.value
+    );
+
     this.axisElementWidth =
       (this.width - 2 * Constants.ChartPadding) / this.data.length;
 
     this.columnWidth =
       (Constants.ColumnMarginToWidthRelation * this.axisElementWidth) /
-      (Constants.ColumnMarginToWidthRelation + 2);
+        (Constants.ColumnMarginToWidthRelation + 2) -
+      (this.secondaryLeft ? Constants.SecondaryColumnWidth : 0) -
+      (this.secondaryRight ? Constants.SecondaryColumnWidth : 0);
     this.columnMargin =
       this.columnWidth / Constants.ColumnMarginToWidthRelation;
   }
@@ -45,23 +57,45 @@ export class ColumnChart extends Chart<ParallelDataType> {
   fontTooBig(fontSize: number) {
     const maxTextWidth = new MaxMeasure();
 
-    this.data.forEach(({ key, AC, PY, FC, PL }) => {
-      const value = AC ?? PY ?? FC ?? PL ?? '?';
+    this.data.forEach((dataPoint) => {
+      const { positiveStackValue, negativeStackValue } =
+        extractParallelValues(dataPoint).primary;
 
-      const keyText = new Text(this.context, key, { size: fontSize });
+      const keyText = new Text(this.context, dataPoint.key, { size: fontSize });
+      const positiveStackValueText = new Text(
+        this.context,
+        positiveStackValue,
+        { size: fontSize }
+      );
+      const negativeStackValueText = new Text(
+        this.context,
+        negativeStackValue,
+        { size: fontSize }
+      );
 
-      if (!(value === '?')) {
-        const valueText = new Text(this.context, value, { size: fontSize });
-        maxTextWidth.addEntry(valueText.boxWidth + 2 * Constants.ColumnPadding);
+      if (positiveStackValue) {
+        maxTextWidth.addEntry(
+          positiveStackValueText.boxWidth + 2 * Constants.ColumnPadding
+        );
+      }
+      if (negativeStackValue) {
+        maxTextWidth.addEntry(
+          negativeStackValueText.boxWidth + 2 * Constants.ColumnPadding
+        );
       }
 
       maxTextWidth.addEntry(keyText.boxWidth);
     });
 
+    const columnWidth =
+      maxTextWidth.max +
+      (this.secondaryLeft ? Constants.SecondaryColumnWidth : 0) +
+      (this.secondaryRight ? Constants.SecondaryColumnWidth : 0);
+
     return (
       this.data.length *
-        (maxTextWidth.max +
-          2 * (maxTextWidth.max / Constants.ColumnMarginToWidthRelation)) >
+        (columnWidth +
+          2 * (columnWidth / Constants.ColumnMarginToWidthRelation)) >
       this.width - 2 * Constants.ChartPadding
     );
   }
@@ -141,12 +175,43 @@ export class ColumnChart extends Chart<ParallelDataType> {
           x:
             Constants.ChartPadding +
             (this.columnMargin + this.columnWidth / 2) +
+            (this.secondaryLeft ? Constants.SecondaryColumnWidth : 0) +
             index * this.axisElementWidth,
           y: this.axisOffset,
         },
         this.axisElementWidth,
         0
       );
+
+      [left, right].forEach(({ value, scenario }, index) => {
+        const secondaryOrigin = new Box(
+          {
+            x:
+              origin.x +
+              (index === 0 ? -1 : 1) * Constants.SecondaryColumnWidth,
+            y: origin.y,
+          },
+          0,
+          0
+        );
+        let valueBox;
+        if (value) {
+          if (value >= 0) {
+            valueBox = Box.fromTopMiddle(
+              secondaryOrigin,
+              this.columnWidth,
+              scale * value
+            );
+          } else {
+            valueBox = Box.fromBottomMiddle(
+              secondaryOrigin,
+              this.columnWidth,
+              scale * Math.abs(value)
+            );
+          }
+          Rect.draw(this.context, valueBox, scenario);
+        }
+      });
 
       const keyText = new Text(this.context, dataPoint.key, {
         size: this.fontSize,
