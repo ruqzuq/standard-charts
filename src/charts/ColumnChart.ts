@@ -1,17 +1,18 @@
 import { ChartTypes } from '..';
 import { Box } from '../base/Box';
-import { extractValues, stackValues } from '../base/Data';
+import { extractParallelValues } from '../base/Data';
+import { ParallelDataType } from '../base/DataTypes';
 import { MaxMeasure } from '../base/MaxMeasure';
 import { Rect } from '../base/Rect';
 import { Text } from '../base/Text';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
 
-export interface ColumnChartProps extends ChartProps {
+export interface ColumnChartProps extends ChartProps<ParallelDataType> {
   chartType: ChartTypes.Column;
 }
 
-export class ColumnChart extends Chart {
+export class ColumnChart extends Chart<ParallelDataType> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   axisOffset: number;
 
@@ -70,53 +71,52 @@ export class ColumnChart extends Chart {
     const positiveMax = new MaxMeasure();
 
     this.data.forEach((dataPoint) => {
-      const { left, primary, right } = extractValues(dataPoint);
+      const { left, primary, right } = extractParallelValues(dataPoint);
 
       const keyText = new Text(this.context, dataPoint.key, {
         size: this.fontSize,
       });
 
-      const [positiveValue, negativeValue] = stackValues(primary);
+      const { positiveStackValue, negativeStackValue } = primary;
 
-      const positiveValueText = new Text(this.context, positiveValue, {
+      const positiveValueText = new Text(this.context, positiveStackValue, {
         size: this.fontSize,
       });
-      const negativeValueText = new Text(this.context, negativeValue, {
+      const negativeValueText = new Text(this.context, negativeStackValue, {
         size: this.fontSize,
       });
 
-      if (positiveValue && negativeValue) {
+      if (primary.positiveStackValue && primary.negativeStackValue) {
         negativeMax.addEntry(
-          scale * Math.abs(negativeValue),
+          scale * Math.abs(negativeStackValue),
           negativeValueText.boxHeight,
           keyText.boxHeight
         );
         positiveMax.addEntry(
-          scale * positiveValue,
+          scale * positiveStackValue,
           positiveValueText.boxHeight
         );
-      } else if (positiveValue) {
+      } else if (positiveStackValue) {
         negativeMax.addEntry(keyText.boxHeight);
         positiveMax.addEntry(
-          scale * positiveValue,
+          scale * positiveStackValue,
           positiveValueText.boxHeight
         );
-      } else if (negativeValue) {
+      } else if (negativeStackValue) {
         negativeMax.addEntry(
-          scale * Math.abs(negativeValue),
+          scale * Math.abs(negativeStackValue),
           negativeValueText.boxHeight
         );
         positiveMax.addEntry(keyText.boxHeight);
       }
 
-      [left, right].forEach((side) => {
-        const [positiveValue, negativeValue] = stackValues(side);
-
-        if (positiveValue) {
-          positiveMax.addEntry(scale * Math.abs(positiveValue));
-        }
-        if (negativeValue) {
-          negativeMax.addEntry(scale * Math.abs(negativeValue));
+      [left, right].forEach(({ value }) => {
+        if (value) {
+          if (value >= 0) {
+            positiveMax.addEntry(scale * value);
+          } else {
+            negativeMax.addEntry(scale * Math.abs(value));
+          }
         }
       });
     });
@@ -134,7 +134,7 @@ export class ColumnChart extends Chart {
     this.drawDebug();
 
     this.data.forEach((dataPoint, index) => {
-      const { left, primary, right } = extractValues(dataPoint);
+      const { left, primary, right } = extractParallelValues(dataPoint);
 
       const origin = new Box(
         {
@@ -155,7 +155,7 @@ export class ColumnChart extends Chart {
       let positiveAnchor = origin;
       let negativeAnchor = origin;
 
-      primary.forEach(({ value, scenario }) => {
+      primary.values.forEach(({ value, scenario }) => {
         let valueBox;
         if (value >= 0) {
           valueBox = Box.fromTopMiddle(
@@ -175,28 +175,28 @@ export class ColumnChart extends Chart {
         Rect.draw(this.context, valueBox, scenario);
       });
 
-      const [positiveValue, negativeValue] = stackValues(primary);
+      const { positiveStackValue, negativeStackValue } = primary;
 
-      const positiveValueText = new Text(this.context, positiveValue, {
+      const positiveValueText = new Text(this.context, positiveStackValue, {
         size: this.fontSize,
       });
-      const negativeValueText = new Text(this.context, negativeValue, {
+      const negativeValueText = new Text(this.context, negativeStackValue, {
         size: this.fontSize,
       });
 
-      if (positiveValue && negativeValue) {
+      if (positiveStackValue && negativeStackValue) {
         positiveValueText.placeTopMiddle(positiveAnchor);
         negativeValueText.placeBottomMiddle(negativeAnchor);
         keyText.placeBottomMiddle(negativeValueText.box);
         //
         positiveValueText.draw(this.context, this.debug);
         negativeValueText.draw(this.context, this.debug);
-      } else if (positiveValue) {
+      } else if (positiveStackValue) {
         positiveValueText.placeTopMiddle(positiveAnchor);
         keyText.placeBottomMiddle(origin);
         //
         positiveValueText.draw(this.context, this.debug);
-      } else if (negativeValue) {
+      } else if (negativeStackValue) {
         negativeValueText.placeBottomMiddle(negativeAnchor);
         keyText.placeTopMiddle(origin);
         //

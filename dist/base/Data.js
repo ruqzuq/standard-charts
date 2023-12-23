@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractValues = exports.stackValues = exports.Scenario = void 0;
+exports.extractValues = exports.extractParallelValues = exports.stackValues = exports.Scenario = void 0;
 var Scenario;
 (function (Scenario) {
     Scenario["PY"] = "PY";
@@ -30,6 +30,49 @@ const stackValues = (metaDataPoints) => {
     return [positiveStackValue, negativeStackValue];
 };
 exports.stackValues = stackValues;
+const extractParallelValues = (dataPoint) => {
+    const { PY, AC, FC, PL } = dataPoint;
+    let left = {};
+    const primary = {};
+    let right = {};
+    const createValue = (scenario) => ({
+        value: dataPoint[scenario],
+        scenario,
+    });
+    if (AC) {
+        primary.values = [createValue(Scenario.AC)];
+    }
+    if (FC) {
+        primary.values = [...(primary.values ?? []), createValue(Scenario.FC)];
+    }
+    if (PL) {
+        if (primary.values) {
+            right = createValue(Scenario.PL);
+        }
+        else {
+            primary.values = [createValue(Scenario.PL)];
+        }
+    }
+    if (PY) {
+        if (primary.values) {
+            left = createValue(Scenario.PY);
+        }
+        else {
+            primary.values = [createValue(Scenario.PY)];
+        }
+    }
+    // Precalculate stacked primary values.
+    primary.values.forEach(({ value }) => {
+        if (value >= 0) {
+            primary.positiveStackValue = (primary.positiveStackValue ?? 0) + value;
+        }
+        else {
+            primary.negativeStackValue = (primary.negativeStackValue ?? 0) + value;
+        }
+    });
+    return { left, primary, right };
+};
+exports.extractParallelValues = extractParallelValues;
 const extractValues = (dataPoint) => {
     const { PY, AC, FC, PL } = dataPoint;
     const left = [];

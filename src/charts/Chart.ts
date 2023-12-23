@@ -1,25 +1,26 @@
 import { Box } from '../base/Box';
 import { Data } from '../base/Data';
+import { DataType } from '../base/DataTypes';
 import { Rect } from '../base/Rect';
 import { Constants } from './Constants';
 
-export interface ChartProps {
+export interface ChartProps<Type extends DataType> {
   width: number;
   height: number;
-  data: Data;
+  data: Data<Type>;
   debug?: boolean;
 }
 
-export class Chart implements ChartProps {
+export class Chart<Type extends DataType> implements ChartProps<Type> {
   width: number;
   height: number;
-  data: Data;
+  data: Data<Type>;
   debug?: boolean;
 
   canvas: OffscreenCanvas;
   context: OffscreenCanvasRenderingContext2D;
 
-  constructor(props: ChartProps) {
+  constructor(props: ChartProps<Type>) {
     const { width, height, data, debug } = props;
 
     // Props

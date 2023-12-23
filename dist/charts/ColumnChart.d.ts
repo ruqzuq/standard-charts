@@ -1,9 +1,10 @@
 import { ChartTypes } from '..';
+import { ParallelDataType } from '../base/DataTypes';
 import { Chart, ChartProps } from './Chart';
-export interface ColumnChartProps extends ChartProps {
+export interface ColumnChartProps extends ChartProps<ParallelDataType> {
     chartType: ChartTypes.Column;
 }
-export declare class ColumnChart extends Chart {
+export declare class ColumnChart extends Chart<ParallelDataType> {
     axisOffset: number;
     columnWidth: number;
     columnMargin: number;

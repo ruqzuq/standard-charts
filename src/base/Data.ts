@@ -1,3 +1,5 @@
+import { DataType, ParallelDataType } from './DataTypes';
+
 export enum Scenario {
   PY = 'PY',
   AC = 'AC',
@@ -5,11 +7,7 @@ export enum Scenario {
   PL = 'PL',
 }
 
-export type DataPoint = {
-  [key in Scenario]?: number | [number];
-};
-
-export type Data = ({ key: string } & DataPoint)[];
+export type Data<Type extends DataType> = ({ key: string } & Type)[];
 
 export const stackValues = (metaDataPoints) => {
   let positiveStackValue = null;
@@ -34,7 +32,66 @@ export const stackValues = (metaDataPoints) => {
   return [positiveStackValue, negativeStackValue];
 };
 
-export const extractValues = (dataPoint: DataPoint) => {
+export type Value = { value?: number; scenario?: Scenario };
+
+export type ParallelValues = {
+  left: Value;
+  primary: {
+    positiveStackValue?: number;
+    negativeStackValue?: number;
+    values?: Value[];
+  };
+  right: Value;
+};
+
+export const extractParallelValues = (
+  dataPoint: ParallelDataType
+): ParallelValues => {
+  const { PY, AC, FC, PL } = dataPoint;
+
+  let left: Value = {};
+  const primary: ParallelValues['primary'] = {};
+  let right: Value = {};
+
+  const createValue = (scenario: Scenario): Value => ({
+    value: dataPoint[scenario],
+    scenario,
+  });
+
+  if (AC) {
+    primary.values = [createValue(Scenario.AC)];
+  }
+  if (FC) {
+    primary.values = [...(primary.values ?? []), createValue(Scenario.FC)];
+  }
+  if (PL) {
+    if (primary.values) {
+      right = createValue(Scenario.PL);
+    } else {
+      primary.values = [createValue(Scenario.PL)];
+    }
+  }
+  if (PY) {
+    if (primary.values) {
+      left = createValue(Scenario.PY);
+    } else {
+      primary.values = [createValue(Scenario.PY)];
+    }
+  }
+
+  // Precalculate stacked primary values.
+  primary.values.forEach(({ value }) => {
+    if (value >= 0) {
+      primary.positiveStackValue = (primary.positiveStackValue ?? 0) + value;
+    } else {
+      primary.negativeStackValue = (primary.negativeStackValue ?? 0) + value;
+    }
+  });
+
+  return { left, primary, right };
+};
+
+export const extractValues = (dataPoint) => {
   const { PY, AC, FC, PL } = dataPoint;
 
   const left = [];
