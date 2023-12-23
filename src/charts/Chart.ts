@@ -33,7 +33,6 @@ export class Chart<Type extends DataType> implements ChartProps<Type> {
     this.canvas = new OffscreenCanvas(width, height);
     this.context = this.canvas.getContext('2d', {
       alpha: true,
-      antialias: false,
     });
     this.context.globalAlpha = 1;
     this.context.textBaseline = 'top';

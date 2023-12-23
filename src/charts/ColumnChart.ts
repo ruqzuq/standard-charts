@@ -268,16 +268,14 @@ export class ColumnChart extends Chart<ParallelDataType> {
         negativeValueText.draw(this.context, this.debug);
       }
       keyText.draw(this.context, this.debug);
-
-      // Axis
-      this.context.lineWidth = 2;
-      this.context.strokeStyle = '#494949';
-      this.context.strokeRect(
-        origin.drawX(),
-        origin.drawY(),
-        origin.width,
-        origin.height
-      );
     });
+    // Axis
+    this.context.fillStyle = '#494949';
+    this.context.fillRect(
+      Constants.ChartPadding,
+      this.axisOffset - 1,
+      this.width - 2 * Constants.ChartPadding,
+      2
+    );
   }
 }
