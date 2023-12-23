@@ -1,0 +1,36 @@
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: latest
+  sourceType: module
+env:
+  browser: true
+  es2021: true
+  node: true
+extends:
+  - eslint:recommended
+  - 'plugin:@typescript-eslint/recommended'
+plugins:
+  - unused-imports
+  - import
+  - '@typescript-eslint'
+rules:
+  react/prop-types: off
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
+  # organize imports
+  import/order:
+    - error
+    - newlines-between: never
+      alphabetize:
+        order: asc
+        caseInsensitive: true
+  # no unused imports
+  no-unused-vars: off
+  unused-imports/no-unused-imports: error
+  unused-imports/no-unused-vars: warn

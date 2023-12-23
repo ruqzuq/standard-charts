@@ -1,0 +1,35 @@
+{
+    "name": "standard-charts",
+    "version": "0.2.0",
+    "description": "Standard-charts is an open-source chart-library inspired by IBCS (unlicensed). It empowers developers to unite modern and timeless corporate financial visualization.",
+    "homepage": "https://ruqzuq.com/standard-charts",
+    "author": "Ruqzuq",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "lint": "eslint --fix src/**/*.js",
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.23.5",
+        "@babel/preset-env": "^7.23.5",
+        "@babel/preset-typescript": "^7.23.3",
+        "@typescript-eslint/eslint-plugin": "^6.13.2",
+        "@typescript-eslint/parser": "^6.13.2",
+        "eslint": "^8.55.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.0",
+        "eslint-plugin-unused-imports": "^3.0.0",
+        "path-browserify": "^1.0.1",
+        "prettier": "^3.1.0",
+        "typescript": "^5.3.3"
+    },
+    "browserslist": {
+        "development": [
+            "last 1 chrome version"
+        ]
+    },
+    "packageManager": "yarn@4.0.2"
+}
