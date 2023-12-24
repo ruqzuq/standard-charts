@@ -13,17 +13,18 @@ export class Rect {
   static draw(
     context: OffscreenCanvasRenderingContext2D,
     box: Box,
-    scenario: Scenario
+    scenario: Scenario,
+    customColor = undefined
   ) {
     switch (scenario) {
       case Scenario.PY:
         this.drawPY(context, box);
         break;
       case Scenario.AC:
-        this.drawAC(context, box);
+        this.drawAC(context, box, customColor);
         break;
       case Scenario.FC:
-        this.drawFC(context, box);
+        this.drawFC(context, box, customColor);
         break;
       case Scenario.PL:
         this.drawPL(context, box);
@@ -35,13 +36,21 @@ export class Rect {
     context.fillStyle = Color.Fill.PY;
     context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
   }
-  static drawAC(context: OffscreenCanvasRenderingContext2D, box: Box) {
-    context.fillStyle = Color.Fill.AC;
+  static drawAC(
+    context: OffscreenCanvasRenderingContext2D,
+    box: Box,
+    customColor
+  ) {
+    context.fillStyle = customColor ?? Color.Fill.AC;
     context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
   }
-  static drawFC(context: OffscreenCanvasRenderingContext2D, box: Box) {
+  static drawFC(
+    context: OffscreenCanvasRenderingContext2D,
+    box: Box,
+    customColor
+  ) {
     context.fillStyle = context.createPattern(
-      this.createPinstripeCanvas(),
+      this.createPinstripeCanvas(customColor),
       'repeat'
     );
     context.fillRect(
@@ -52,7 +61,7 @@ export class Rect {
     );
     //
     context.lineWidth = 2;
-    context.strokeStyle = '#404040';
+    context.strokeStyle = customColor ?? '#404040';
     context.strokeRect(
       box.drawX() + 1,
       box.drawY() + 1,
@@ -79,12 +88,12 @@ export class Rect {
     );
   }
 
-  static createPinstripeCanvas() {
+  static createPinstripeCanvas(customColor) {
     const patternCanvas = new OffscreenCanvas(8, 8);
     const pctx = patternCanvas.getContext('2d', {
       antialias: false,
     });
-    const color = '#404040';
+    const color = customColor ?? '#404040';
 
     const CANVAS_SIDE_LENGTH = 8;
     const WIDTH = CANVAS_SIDE_LENGTH;

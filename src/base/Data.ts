@@ -1,4 +1,4 @@
-import { DataType, ParallelDataType } from './DataTypes';
+import { DataType, ParallelDataType, SimpleDataType } from './DataTypes';
 
 export enum Scenario {
   PY = 'PY',
@@ -33,6 +33,20 @@ export const stackValues = (metaDataPoints) => {
 };
 
 export type Value = { value?: number; scenario?: Scenario };
+
+export const extractSimpleValue = (dataPoint: SimpleDataType): Value => {
+  if (Scenario.PY in dataPoint) {
+    return { value: dataPoint.PY, scenario: Scenario.PY };
+  } else if (Scenario.AC in dataPoint) {
+    return { value: dataPoint.AC, scenario: Scenario.AC };
+  } else if (Scenario.FC in dataPoint) {
+    return { value: dataPoint.FC, scenario: Scenario.FC };
+  } else if (Scenario.PL in dataPoint) {
+    return { value: dataPoint.PL, scenario: Scenario.PL };
+  } else {
+    return {};
+  }
+};
 
 export type ParallelValues = {
   left: Value;
