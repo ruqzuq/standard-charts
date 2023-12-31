@@ -1,6 +1,7 @@
 export const Constants = {
   ChartPadding: 20,
   ColumnPadding: 1,
-  ColumnMarginToWidthRelation: 6,
-  SecondaryColumnWidth: 8,
+  ColumnToWidthRelation: 6 / 8,
+  ColumnMarginToWidthRelation: 1 / 8,
+  SecondaryColumnToWidthRelation: 1 / 8,
 };
