@@ -5,6 +5,11 @@ const Fill = {
   PL: '#fffff',
 };
 
+const Stroke = {
+  FC: '#404040',
+  PL: '#494949',
+};
+
 const Impact = {
   Color: {
     Positive: '#8cb400',
@@ -23,4 +28,4 @@ const Impact = {
   },
 };
 
-export const Color = { Fill, Impact };
+export const Color = { Fill, Stroke, Impact };
