@@ -49,6 +49,14 @@ export class Rect {
     box: Box,
     customColor
   ) {
+    context.fillStyle = Color.Fill.FC;
+    context.fillRect(
+      box.drawX() + 1,
+      box.drawY() + 1,
+      box.width - 2,
+      box.height - 2
+    );
+    //
     context.fillStyle = context.createPattern(
       this.createPinstripeCanvas(customColor),
       'repeat'
@@ -61,7 +69,7 @@ export class Rect {
     );
     //
     context.lineWidth = 2;
-    context.strokeStyle = customColor ?? '#404040';
+    context.strokeStyle = customColor ?? Color.Stroke.FC;
     context.strokeRect(
       box.drawX() + 1,
       box.drawY() + 1,
@@ -70,7 +78,7 @@ export class Rect {
     );
   }
   static drawPL(context: OffscreenCanvasRenderingContext2D, box: Box) {
-    context.fillStyle = '#ffffff';
+    context.fillStyle = Color.Fill.PL;
     context.fillRect(
       box.drawX() + 1,
       box.drawY() + 1,
@@ -79,7 +87,7 @@ export class Rect {
     );
     //
     context.lineWidth = 2;
-    context.strokeStyle = '#494949';
+    context.strokeStyle = Color.Stroke.PL;
     context.strokeRect(
       box.drawX() + 1,
       box.drawY() + 1,
