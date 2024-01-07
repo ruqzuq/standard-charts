@@ -14,7 +14,7 @@ export class Rect {
     context: OffscreenCanvasRenderingContext2D,
     box: Box,
     scenario: Scenario,
-    customColor = undefined
+    customColor: string = undefined
   ) {
     switch (scenario) {
       case Scenario.PY:
@@ -27,7 +27,7 @@ export class Rect {
         this.drawFC(context, box, customColor);
         break;
       case Scenario.PL:
-        this.drawPL(context, box);
+        this.drawPL(context, box, customColor);
         break;
     }
   }
@@ -39,7 +39,7 @@ export class Rect {
   static drawAC(
     context: OffscreenCanvasRenderingContext2D,
     box: Box,
-    customColor
+    customColor: string
   ) {
     context.fillStyle = customColor ?? Color.Fill.AC;
     context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
@@ -77,7 +77,11 @@ export class Rect {
       box.height - 2
     );
   }
-  static drawPL(context: OffscreenCanvasRenderingContext2D, box: Box) {
+  static drawPL(
+    context: OffscreenCanvasRenderingContext2D,
+    box: Box,
+    customColor: string
+  ) {
     context.fillStyle = Color.Fill.PL;
     context.fillRect(
       box.drawX() + 1,
@@ -87,7 +91,7 @@ export class Rect {
     );
     //
     context.lineWidth = 2;
-    context.strokeStyle = Color.Stroke.PL;
+    context.strokeStyle = customColor ?? Color.Stroke.PL;
     context.strokeRect(
       box.drawX() + 1,
       box.drawY() + 1,
