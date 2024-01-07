@@ -9,11 +9,14 @@ import { Rect } from '../../base/Rect';
 import { Text } from '../../base/Text';
 import { Chart, ChartProps } from '../Chart';
 import { Constants } from '../Constants';
+import { SideExtension, SideExtensionProps } from './SideExtension';
 import { VarianceColumnChart } from './VarianceColumnChart';
 
 export interface ColumnChartProps extends ChartProps<ParallelDataType> {
   chartType: ChartTypes.Column;
   top?: VarianceTopExtension[];
+  left?: SideExtensionProps;
+  right?: SideExtensionProps;
 }
 
 export interface VarianceTopExtension {
@@ -23,8 +26,9 @@ export interface VarianceTopExtension {
 
 export class ColumnChart extends Chart<ParallelDataType> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  axisWidth: number;
   axisOrigin: number;
-  axisExtensionOffset: number;
+  axisExtensionOffset: number = 0;
 
   columnWidth: number;
   columnMargin: number;
@@ -38,16 +42,35 @@ export class ColumnChart extends Chart<ParallelDataType> {
   //
   topVarianceCharts: VarianceColumnChart[] = [];
   //
+  leftSideExtension: SideExtension;
+  rightSideExtension: SideExtension;
 
   constructor(props: ColumnChartProps) {
     super(props);
+    const { top, left, right } = props;
+
+    if (left)
+      this.leftSideExtension = new SideExtension(left, this.context, true);
+    if (right)
+      this.rightSideExtension = new SideExtension(right, this.context, false);
 
     this.fontSize = 8;
     [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32].forEach((fontSize) => {
-      if (!this.fontTooBig(fontSize)) {
-        this.fontSize = fontSize;
-      }
+      if (!this.fontTooBig(fontSize)) this.fontSize = fontSize;
     });
+
+    if (left) {
+      this.leftSideExtension.fontSize = this.fontSize;
+      this.leftSideExtension.width = this.leftSideExtension.fontToWidth(
+        this.fontSize
+      );
+    }
+    if (right) {
+      this.rightSideExtension.fontSize = this.fontSize;
+      this.rightSideExtension.width = this.rightSideExtension.fontToWidth(
+        this.fontSize
+      );
+    }
 
     this.secondaryLeft = this.data.some(
       (dataPoint) => extractParallelValues(dataPoint).left.value
@@ -56,8 +79,15 @@ export class ColumnChart extends Chart<ParallelDataType> {
       (dataPoint) => extractParallelValues(dataPoint).right.value
     );
 
-    this.axisElementWidth =
-      (this.width - 2 * Constants.ChartPadding) / this.data.length;
+    this.axisExtensionOffset = this.leftSideExtension?.width ?? 0;
+
+    this.axisWidth =
+      this.width -
+      this.axisExtensionOffset -
+      (this.rightSideExtension?.width ?? 0) -
+      2 * Constants.ChartPadding;
+
+    this.axisElementWidth = this.axisWidth / this.data.length;
 
     this.columnWidth =
       Constants.ColumnToWidthRelation * this.axisElementWidth -
@@ -70,8 +100,8 @@ export class ColumnChart extends Chart<ParallelDataType> {
     this.columnMargin =
       Constants.ColumnMarginToWidthRelation * this.axisElementWidth;
 
-    if (props.top) {
-      props.top.forEach((extension) => {
+    if (top) {
+      top.forEach((extension) => {
         this.topExtension(extension);
       });
     }
@@ -113,7 +143,10 @@ export class ColumnChart extends Chart<ParallelDataType> {
     const elementWidth = maxTextWidth.max / Constants.ColumnToWidthRelation;
 
     return (
-      this.data.length * elementWidth > this.width - 2 * Constants.ChartPadding
+      this.data.length * elementWidth +
+        (this.leftSideExtension?.fontToWidth(fontSize) ?? 0) +
+        (this.rightSideExtension?.fontToWidth(fontSize) ?? 0) >
+      this.width - 2 * Constants.ChartPadding
     );
   }
 
@@ -172,6 +205,18 @@ export class ColumnChart extends Chart<ParallelDataType> {
       });
     });
 
+    // Side-extensions
+    [this.leftSideExtension, this.rightSideExtension].forEach((extension) => {
+      if (extension) {
+        const extensionHeight = this.leftSideExtension.scaleToHeight(scale);
+        if (extensionHeight > 0) {
+          positiveMax.addEntry(extensionHeight);
+        } else {
+          negativeMax.addEntry(Math.abs(extensionHeight));
+        }
+      }
+    });
+
     //
     let topExtensionHeight = 0;
     this.topVarianceCharts.forEach((chart) => {
@@ -210,6 +255,7 @@ export class ColumnChart extends Chart<ParallelDataType> {
         {
           x:
             Constants.ChartPadding +
+            this.axisExtensionOffset +
             (this.columnMargin + this.columnWidth / 2) +
             (this.secondaryLeft
               ? Constants.SecondaryColumnToWidthRelation * this.axisElementWidth
@@ -311,10 +357,16 @@ export class ColumnChart extends Chart<ParallelDataType> {
     });
     // Axis
     const axis = new ColumnAxis(
-      { x: Constants.ChartPadding, y: this.axisOrigin },
-      this.width - 2 * Constants.ChartPadding
+      {
+        x: Constants.ChartPadding + this.axisExtensionOffset,
+        y: this.axisOrigin,
+      },
+      this.axisWidth
     );
     axis.draw(this.context);
+    // Side extensions
+    this.leftSideExtension?.draw(scale, this.axisOrigin, this.axisWidth);
+    this.rightSideExtension?.draw(scale, this.axisOrigin, this.axisWidth);
   }
 
   topExtension(extension: VarianceTopExtension) {
@@ -322,7 +374,7 @@ export class ColumnChart extends Chart<ParallelDataType> {
       chartType: ChartTypes.VarianceColumn,
       variance: extension.variance,
       height: 0,
-      width: this.width,
+      width: this.axisWidth,
       data: this.data.map((dataPoint) => {
         const { PY, AC, FC, PL } = dataPoint;
 
@@ -348,6 +400,7 @@ export class ColumnChart extends Chart<ParallelDataType> {
       axis: extension.delta,
       debug: this.debug,
     });
+    varianceChart.axisWidth = this.axisWidth;
     varianceChart.axisElementWidth = this.axisElementWidth;
     varianceChart.columnWidth = this.columnWidth;
     varianceChart.columnMargin = this.columnMargin;
@@ -358,6 +411,7 @@ export class ColumnChart extends Chart<ParallelDataType> {
     varianceChart.context = this.context;
     varianceChart.fontSize = this.fontSize;
     varianceChart.isExtension = true;
+    varianceChart.axisExtensionOffset = this.axisExtensionOffset;
 
     this.topVarianceCharts.push(varianceChart);
   }

@@ -32,6 +32,12 @@ export class Rect {
     }
   }
 
+  // todo refactor Rect drawing
+  static drawFill(context, box, color) {
+    context.fillStyle = color;
+    context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+  }
+
   static drawPY(context: OffscreenCanvasRenderingContext2D, box: Box) {
     context.fillStyle = Color.Fill.PY;
     context.fillRect(box.drawX(), box.drawY(), box.width, box.height);

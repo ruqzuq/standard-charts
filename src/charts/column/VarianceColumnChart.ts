@@ -17,7 +17,9 @@ export interface VarianceColumnChartProps extends ChartProps<SimpleDataType> {
 }
 
 export class VarianceColumnChart extends Chart<SimpleDataType> {
+  axisWidth: number;
   axisOffset: number;
+  axisExtensionOffset: number = 0;
 
   columnWidth: number;
   columnMargin: number;
@@ -39,8 +41,9 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
       }
     });
 
-    this.axisElementWidth =
-      (this.width - 2 * Constants.ChartPadding) / this.data.length;
+    this.axisWidth = this.width - 2 * Constants.ChartPadding;
+
+    this.axisElementWidth = this.axisWidth / this.data.length;
 
     this.columnWidth = Constants.ColumnToWidthRelation * this.axisElementWidth;
     this.columnMargin =
@@ -114,8 +117,11 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
     this.drawDebug();
 
     const axis = new ColumnAxis(
-      { x: Constants.ChartPadding, y: this.axisOffset },
-      this.width - 2 * Constants.ChartPadding
+      {
+        x: Constants.ChartPadding + this.axisExtensionOffset,
+        y: this.axisOffset,
+      },
+      this.axisWidth
     );
     axis.draw(this.context, this.axis);
 
@@ -126,6 +132,7 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
         {
           x:
             Constants.ChartPadding +
+            this.axisExtensionOffset +
             (this.columnMargin + this.columnWidth / 2) +
             this.secondaryLeftOffset +
             +index * this.axisElementWidth,

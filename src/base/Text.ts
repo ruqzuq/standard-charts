@@ -26,7 +26,9 @@ export class Text {
     context.font = this.font;
     this.width = context.measureText(text).width;
 
-    this.height = size;
+    this.height =
+      context.measureText(text).actualBoundingBoxAscent +
+      context.measureText(text).actualBoundingBoxDescent;
 
     this.padding = Math.ceil(size / 8);
 
