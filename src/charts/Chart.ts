@@ -20,6 +20,7 @@ export class Chart<Type extends DataType> implements ChartProps<Type> {
   canvas: OffscreenCanvas;
   context: OffscreenCanvasRenderingContext2D;
   chartOffset: number = 0;
+  isExtension: boolean = false;
 
   constructor(props: ChartProps<Type>) {
     const { width, height, data, debug } = props;
@@ -39,25 +40,29 @@ export class Chart<Type extends DataType> implements ChartProps<Type> {
     this.context.textBaseline = 'top';
     this.context.fillStyle = '#ffffff';
     this.context.fillRect(0, 0, width, height);
+    this.context.imageSmoothingEnabled = false;
   }
 
   drawDebug() {
+    const chartHeight = this.isExtension
+      ? this.height
+      : this.height - this.chartOffset;
     if (this.debug) {
       const outerBox = new Box(
         {
           x: this.width / 2,
-          y: this.chartOffset + (this.height - this.chartOffset) / 2,
+          y: this.chartOffset + chartHeight / 2,
         },
         this.width,
-        this.height - this.chartOffset
+        chartHeight
       );
       const innerBox = new Box(
         {
           x: this.width / 2,
-          y: this.chartOffset + (this.height - this.chartOffset) / 2,
+          y: this.chartOffset + chartHeight / 2,
         },
         this.width - 2 * Constants.ChartPadding,
-        this.height - this.chartOffset - 2 * Constants.ChartPadding
+        chartHeight - 2 * Constants.ChartPadding
       );
 
       Rect.drawDebug(this.context, innerBox);

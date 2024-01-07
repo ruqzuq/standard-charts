@@ -1,13 +1,14 @@
-import { ChartTypes } from '..';
-import { Box } from '../base/Box';
-import { Color } from '../base/Color';
-import { Scenario, extractSimpleValue } from '../base/Data';
-import { SimpleDataType } from '../base/DataTypes';
-import { MaxMeasure } from '../base/MaxMeasure';
-import { Rect } from '../base/Rect';
-import { Text } from '../base/Text';
-import { Chart, ChartProps } from './Chart';
-import { Constants } from './Constants';
+import { ChartTypes } from '../..';
+import { ColumnAxis } from '../../base/Axis';
+import { Box } from '../../base/Box';
+import { Color } from '../../base/Color';
+import { Scenario, extractSimpleValue } from '../../base/Data';
+import { SimpleDataType } from '../../base/DataTypes';
+import { MaxMeasure } from '../../base/MaxMeasure';
+import { Rect } from '../../base/Rect';
+import { Text } from '../../base/Text';
+import { Chart, ChartProps } from '../Chart';
+import { Constants } from '../Constants';
 
 export interface VarianceColumnChartProps extends ChartProps<SimpleDataType> {
   chartType: ChartTypes.VarianceColumn;
@@ -81,7 +82,7 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
       if (value) {
         const valueText = new Text(
           this.context,
-          (value > 0 ? '+' : '') + value,
+          (value > 0 ? '+' : '-') + Math.abs(value),
           {
             size: this.fontSize,
           }
@@ -95,9 +96,14 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
     });
 
     // annahme, dass scaling präziser wird
-    this.axisOffset = Constants.ChartPadding + positiveMax.max;
+    this.axisOffset =
+      this.chartOffset + Constants.ChartPadding + positiveMax.max;
 
-    return negativeMax.max + positiveMax.max + 2 * Constants.ChartPadding;
+    return (
+      negativeMax.max +
+      positiveMax.max +
+      (this.isExtension ? 1 : 2) * Constants.ChartPadding
+    );
   }
 
   scaleTooBig(scale: number) {
@@ -106,7 +112,12 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
 
   draw(scale: number) {
     this.drawDebug();
-    this.drawAxis();
+
+    const axis = new ColumnAxis(
+      { x: Constants.ChartPadding, y: this.axisOffset },
+      this.width - 2 * Constants.ChartPadding
+    );
+    axis.draw(this.context, this.axis);
 
     this.data.forEach((dataPoint, index) => {
       const { value, scenario } = extractSimpleValue(dataPoint);
@@ -154,43 +165,5 @@ export class VarianceColumnChart extends Chart<SimpleDataType> {
         valueText.draw(this.context, this.debug);
       }
     });
-  }
-
-  drawAxis() {
-    if (this.axis === Scenario.PY) {
-      // Axis
-      this.context.fillStyle = Color.Fill.PY;
-      this.context.fillRect(
-        Constants.ChartPadding,
-        this.axisOffset - 2,
-        this.width - 2 * Constants.ChartPadding,
-        4
-      );
-    } else if (this.axis === Scenario.FC) {
-    } else if (this.axis === Scenario.PL) {
-      // Axis
-      this.context.fillStyle = Color.Stroke.PL;
-      this.context.fillRect(
-        Constants.ChartPadding,
-        this.axisOffset - 2,
-        this.width - 2 * Constants.ChartPadding,
-        1
-      );
-      this.context.fillRect(
-        Constants.ChartPadding,
-        this.axisOffset + 1,
-        this.width - 2 * Constants.ChartPadding,
-        1
-      );
-    } else {
-      // Axis
-      this.context.fillStyle = '#494949';
-      this.context.fillRect(
-        Constants.ChartPadding,
-        this.axisOffset - 1,
-        this.width - 2 * Constants.ChartPadding,
-        2
-      );
-    }
   }
 }

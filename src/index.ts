@@ -1,8 +1,8 @@
-import { ColumnChart, ColumnChartProps } from './charts/ColumnChart';
+import { ColumnChart, ColumnChartProps } from './charts/column/ColumnChart';
 import {
   VarianceColumnChart,
   VarianceColumnChartProps,
-} from './charts/VarianceColumnChart';
+} from './charts/column/VarianceColumnChart';
 
 export enum ChartTypes {
   Column = 'COLUMN',
@@ -31,8 +31,9 @@ export const StandardCharts = async (charts: ChartProps[]) => {
   });
 
   let scale;
+  //todo improve
   let min = 0;
-  let max = 10;
+  let max = 10000000;
 
   for (let i = 0; i < 100; i++) {
     scale = min + (max - min) / 2;
