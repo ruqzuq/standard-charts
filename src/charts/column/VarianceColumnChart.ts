@@ -4,9 +4,9 @@ import { Box } from '../../base/Box';
 import { Color } from '../../base/Color';
 import { Scenario, extractSimpleValue } from '../../base/Data';
 import { SimpleDataType } from '../../base/DataTypes';
-import { MaxMeasure } from '../../base/MaxMeasure';
 import { Rect } from '../../base/Rect';
 import { Text } from '../../base/Text';
+import { MaxMeasure } from '../../base/utils/MaxMeasure';
 import { Chart, ChartProps } from '../Chart';
 import { Constants } from '../Constants';
 
