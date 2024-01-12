@@ -1,13 +1,14 @@
-import { Box } from '../../base/Box';
-import { Rect } from '../../base/Rect';
-import { Text } from '../../base/Text';
-import { Constants } from '../Constants';
+import { Box } from '../base/Box';
+import { Orientation, OrientationBox } from '../base/OrientationBox';
+import { Rect } from '../base/Rect';
+import { Text } from '../base/Text';
+import { Constants } from './Constants';
 
-export interface SideExtensionProps {
+export interface AxisExtensionProps {
   value: number;
 }
 
-export class SideExtension {
+export class AxisExtension {
   value: number;
   context: OffscreenCanvasRenderingContext2D;
 
@@ -15,8 +16,10 @@ export class SideExtension {
   fontSize: number;
   isLeft: boolean;
 
+  orientation: Orientation = Orientation.Horizontal;
+
   constructor(
-    props: SideExtensionProps,
+    props: AxisExtensionProps,
     context: OffscreenCanvasRenderingContext2D,
     isLeft: boolean
   ) {
@@ -45,18 +48,24 @@ export class SideExtension {
     // remove
     this.scaleToHeight(scale);
     if (this.isLeft) {
-      const index = new Box(
-        {
-          x: Constants.ChartPadding + this.width - Constants.IndexArrowSize / 2,
-          y: axisOrigin - scale * this.value,
-        },
-        Constants.IndexArrowSize,
-        Constants.IndexArrowSize
+      const index = new OrientationBox(
+        new Box(
+          {
+            x:
+              Constants.ChartPadding +
+              this.width -
+              Constants.IndexArrowSize / 2,
+            y: axisOrigin - scale * this.value,
+          },
+          Constants.IndexArrowSize,
+          Constants.IndexArrowSize
+        ),
+        this.orientation
       );
 
       // Line
-      const transparentLine = Box.fromMiddleRight(index, axisWidth, 4);
-      const line = Box.fromMiddleRight(index, axisWidth, 2);
+      const transparentLine = OrientationBox.fromEast(index, axisWidth, 4);
+      const line = OrientationBox.fromEast(index, axisWidth, 2);
       //
       this.context.globalAlpha = 0.5;
       Rect.drawFill(this.context, transparentLine, '#FFFFFF');
@@ -66,9 +75,9 @@ export class SideExtension {
       // Arrow
       this.context.fillStyle = 'black';
       this.context.beginPath();
-      this.context.moveTo(index.topLeft().x, index.topLeft().y);
-      this.context.lineTo(index.middleRight().x, index.middleRight().y);
-      this.context.lineTo(index.bottomLeft().x, index.bottomLeft().y);
+      this.context.moveTo(index.northWest().x, index.northWest().y);
+      this.context.lineTo(index.east().x, index.east().y);
+      this.context.lineTo(index.southWest().x, index.southWest().y);
       this.context.fill();
 
       // Text
