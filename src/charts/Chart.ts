@@ -4,8 +4,11 @@ import { DataType } from '../base/DataTypes';
 import { Orientation } from '../base/orientation/Orientation';
 import { Rect } from '../base/Rect';
 import { Constants } from './Constants';
+import { ChartStyle, ChartType } from './Types';
 
 export interface ChartProps<Type extends DataType> {
+  type: ChartType;
+  style: ChartStyle;
   width: number;
   height: number;
   data: Data<Type>;
@@ -13,6 +16,8 @@ export interface ChartProps<Type extends DataType> {
 }
 
 export class Chart<Type extends DataType> implements ChartProps<Type> {
+  type: ChartType;
+  style: ChartStyle;
   width: number;
   height: number;
   data: Data<Type>;
@@ -24,20 +29,25 @@ export class Chart<Type extends DataType> implements ChartProps<Type> {
   isExtension: boolean = false;
 
   //
-  orientation: Orientation = Orientation.Vertical;
+  orientation: Orientation;
   orientationWidth: number;
   orientationHeight: number;
 
   constructor(props: ChartProps<Type>) {
-    const { width, height, data, debug } = props;
+    const { type, style, width, height, data, debug } = props;
 
     // Props
+    this.type = type;
+    this.style = style;
     this.width = width;
     this.height = height;
     this.data = data;
     this.debug = debug;
 
-    this.orientation;
+    this.orientation =
+      this.style === ChartStyle.Bar
+        ? Orientation.Vertical
+        : Orientation.Horizontal;
 
     this.orientationWidth =
       this.orientation === Orientation.Horizontal ? this.width : this.height;

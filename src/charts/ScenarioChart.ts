@@ -1,4 +1,3 @@
-import { ChartTypes } from '..';
 import { ColumnAxis } from '../base/Axis';
 import { Box } from '../base/Box';
 import { Scenario, extractParallelValues } from '../base/Data';
@@ -12,10 +11,12 @@ import { MaxMeasure } from '../base/utils/MaxMeasure';
 import { AxisExtension, AxisExtensionProps } from '../extensions/AxisExtension';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
+import { ChartStyle, ChartType } from './Types';
 import { VarianceChart } from './VarianceChart';
 
-export interface ColumnChartProps extends ChartProps<ParallelDataType> {
-  chartType: ChartTypes.Column;
+export interface ScenarioChartProps extends ChartProps<ParallelDataType> {
+  type: ChartType.Scenario;
+  style: ChartStyle.Column | ChartStyle.Bar;
   variance?: VarianceExtension[];
   start?: AxisExtensionProps;
   end?: AxisExtensionProps;
@@ -26,7 +27,7 @@ export interface VarianceExtension {
   delta: Scenario.PY | Scenario.PL;
 }
 
-export class ColumnChart extends Chart<ParallelDataType> {
+export class ScenarioChart extends Chart<ParallelDataType> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   axisWidth: number;
   axisOrigin: number;
@@ -49,7 +50,7 @@ export class ColumnChart extends Chart<ParallelDataType> {
 
   //
 
-  constructor(props: ColumnChartProps) {
+  constructor(props: ScenarioChartProps) {
     super(props);
     const { variance, start, end } = props;
 
@@ -442,7 +443,8 @@ export class ColumnChart extends Chart<ParallelDataType> {
 
   varianceExtension(extension: VarianceExtension) {
     const varianceChart = new VarianceChart({
-      chartType: ChartTypes.VarianceColumn,
+      type: ChartType.Variance,
+      style: this.style,
       variance: extension.variance,
       height: 0,
       width: this.axisWidth,

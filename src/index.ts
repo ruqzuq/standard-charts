@@ -1,15 +1,11 @@
 import { Text } from './base/Text';
-import { ColumnChart, ColumnChartProps } from './charts/ScenarioChart';
+import { ScenarioChart, ScenarioChartProps } from './charts/ScenarioChart';
+import { ChartType } from './charts/Types';
 import { VarianceChart, VarianceChartProps } from './charts/VarianceChart';
 
-export enum ChartTypes {
-  Column = 'COLUMN',
-  VarianceColumn = 'VARIANCE-COLUMN',
-}
+export type ChartProps = ScenarioChartProps | VarianceChartProps;
 
-export type ChartProps = ColumnChartProps | VarianceChartProps;
-
-export type Chart = ColumnChart | VarianceChart;
+export type Chart = ScenarioChart | VarianceChart;
 
 /**
  * Return URL of the rendered chart png-images.
@@ -18,11 +14,11 @@ export const StandardCharts = async (charts: ChartProps[]) => {
   const chartObjects: Chart[] = [];
 
   charts.forEach((chart) => {
-    switch (chart.chartType) {
-      case ChartTypes.Column:
-        chartObjects.push(new ColumnChart(chart));
+    switch (chart.type) {
+      case ChartType.Scenario:
+        chartObjects.push(new ScenarioChart(chart));
         break;
-      case ChartTypes.VarianceColumn:
+      case ChartType.Variance:
         chartObjects.push(new VarianceChart(chart));
         break;
     }

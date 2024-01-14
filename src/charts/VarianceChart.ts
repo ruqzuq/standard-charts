@@ -1,4 +1,3 @@
-import { ChartTypes } from '..';
 import { ColumnAxis } from '../base/Axis';
 import { Box } from '../base/Box';
 import { Color } from '../base/Color';
@@ -11,9 +10,10 @@ import { Rect } from '../base/Rect';
 import { MaxMeasure } from '../base/utils/MaxMeasure';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
+import { ChartType } from './Types';
 
 export interface VarianceChartProps extends ChartProps<SimpleDataType> {
-  chartType: ChartTypes.VarianceColumn;
+  type: ChartType.Variance;
   variance: 'ABSOLUTE' | 'RELATIVE';
   axis?: Scenario;
 }
