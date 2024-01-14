@@ -1,17 +1,14 @@
-import { ColumnChart, ColumnChartProps } from './charts/column/ColumnChart';
-import {
-  VarianceColumnChart,
-  VarianceColumnChartProps,
-} from './charts/column/VarianceColumnChart';
+import { ColumnChart, ColumnChartProps } from './charts/ScenarioChart';
+import { VarianceChart, VarianceChartProps } from './charts/VarianceChart';
 
 export enum ChartTypes {
   Column = 'COLUMN',
   VarianceColumn = 'VARIANCE-COLUMN',
 }
 
-export type ChartProps = ColumnChartProps | VarianceColumnChartProps;
+export type ChartProps = ColumnChartProps | VarianceChartProps;
 
-export type Chart = ColumnChart | VarianceColumnChart;
+export type Chart = ColumnChart | VarianceChart;
 
 /**
  * Return URL of the rendered chart png-images.
@@ -25,7 +22,7 @@ export const StandardCharts = async (charts: ChartProps[]) => {
         chartObjects.push(new ColumnChart(chart));
         break;
       case ChartTypes.VarianceColumn:
-        chartObjects.push(new VarianceColumnChart(chart));
+        chartObjects.push(new VarianceChart(chart));
         break;
     }
   });
