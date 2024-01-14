@@ -1,6 +1,7 @@
 import { Box } from '../base/Box';
-import { Orientation, OrientationBox } from '../base/OrientationBox';
-import { OrientationText } from '../base/OrientationText';
+import { Orientation } from '../base/orientation/Orientation';
+import { OrientationBox } from '../base/orientation/OrientationBox';
+import { OrientationText } from '../base/orientation/OrientationText';
 import { Rect } from '../base/Rect';
 import { Constants } from '../charts/Constants';
 

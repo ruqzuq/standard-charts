@@ -1,6 +1,6 @@
-import { Box } from './Box';
-import { Orientation } from './OrientationBox';
-import { Text, TextProps } from './Text';
+import { Box } from '../Box';
+import { Text, TextProps } from '../Text';
+import { Orientation } from './Orientation';
 
 export class OrientationText extends Text {
   orientation: Orientation;

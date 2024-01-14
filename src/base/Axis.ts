@@ -1,6 +1,6 @@
 import { Color } from './Color';
 import { Scenario } from './Data';
-import { Orientation } from './OrientationBox';
+import { Orientation } from './orientation/Orientation';
 import { Rect } from './Rect';
 import { Position } from './Types';
 

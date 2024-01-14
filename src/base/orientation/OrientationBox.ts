@@ -1,5 +1,6 @@
-import { Box } from './Box';
-import { Position } from './Types';
+import { Box } from '../Box';
+import { Position } from '../Types';
+import { Orientation } from './Orientation';
 
 /**
     North-West─────────North─────────North-East
@@ -10,23 +11,6 @@ import { Position } from './Types';
         │                                  │
     South-West─────────South─────────South-East
 */
-
-export enum Orientation {
-  /**
-         ┌─┐
-     ┌─┐ │ │
-     │ │ │ │
-    ─┴─┴─┴─┴─ 
-    */
-  Horizontal = 'HORIZONTAL',
-  /**
-    ├─────┐
-    ├─────┘
-    ├────────┐
-    ├────────┘
-    */
-  Vertical = 'VERTICAL',
-}
 
 const fromGenericOrientationBox = (
   orientationBox: OrientationBox,

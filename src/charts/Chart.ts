@@ -1,7 +1,7 @@
 import { Box } from '../base/Box';
 import { Data } from '../base/Data';
 import { DataType } from '../base/DataTypes';
-import { Orientation } from '../base/OrientationBox';
+import { Orientation } from '../base/orientation/Orientation';
 import { Rect } from '../base/Rect';
 import { Constants } from './Constants';
 
