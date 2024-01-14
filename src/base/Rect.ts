@@ -1,7 +1,7 @@
 import { Box } from './Box';
 import { Color } from './Color';
 import { Scenario } from './Data';
-import { Debug } from './Debug';
+import { Debug } from './utils/Debug';
 
 export class Rect {
   static drawDebug(context: OffscreenCanvasRenderingContext2D, box: Box) {
