@@ -17,6 +17,9 @@ export class Text {
   boxWidth: number;
   boxHeight: number;
 
+  //
+  static asyncDrawing = [];
+
   constructor(context, text, props: TextProps = {}) {
     const { bold = false, size = 10, family = 'Arial' } = props;
 
@@ -38,27 +41,29 @@ export class Text {
 
   // Drawing
   draw(context: OffscreenCanvasRenderingContext2D, debug: boolean = false) {
-    context.fillStyle = 'white';
-    context.globalAlpha = 0.5;
-    context.fillRect(
-      this.box.drawX(),
-      this.box.drawY(),
-      this.box.width,
-      this.box.height
-    );
-    context.globalAlpha = 1;
+    Text.asyncDrawing.push(() => {
+      context.fillStyle = 'white';
+      context.globalAlpha = 0.5;
+      context.fillRect(
+        this.box.drawX(),
+        this.box.drawY(),
+        this.box.width,
+        this.box.height
+      );
+      context.globalAlpha = 1;
 
-    context.font = this.font;
-    context.fillStyle = 'black';
-    context.fillText(
-      this.text,
-      this.box.drawX() + this.padding,
-      this.box.drawY() + this.padding
-    );
+      context.font = this.font;
+      context.fillStyle = 'black';
+      context.fillText(
+        this.text,
+        this.box.drawX() + this.padding,
+        this.box.drawY() + this.padding
+      );
 
-    if (debug) {
-      Rect.drawDebug(context, this.box);
-    }
+      if (debug) {
+        Rect.drawDebug(context, this.box);
+      }
+    });
   }
   //
 

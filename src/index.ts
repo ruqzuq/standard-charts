@@ -1,3 +1,4 @@
+import { Text } from './base/Text';
 import { ColumnChart, ColumnChartProps } from './charts/ScenarioChart';
 import { VarianceChart, VarianceChartProps } from './charts/VarianceChart';
 
@@ -43,6 +44,10 @@ export const StandardCharts = async (charts: ChartProps[]) => {
 
   chartObjects.forEach((chart) => {
     chart.draw(scale);
+    Text.asyncDrawing.forEach((draw) => {
+      draw();
+    });
+    while (Text.asyncDrawing.length > 0) Text.asyncDrawing.pop();
   });
 
   const promises = chartObjects.map(async (chart) => {
