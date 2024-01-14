@@ -1,6 +1,7 @@
 import { Box } from '../base/Box';
 import { Data } from '../base/Data';
 import { DataType } from '../base/DataTypes';
+import { Orientation } from '../base/OrientationBox';
 import { Rect } from '../base/Rect';
 import { Constants } from './Constants';
 
@@ -22,6 +23,11 @@ export class Chart<Type extends DataType> implements ChartProps<Type> {
   chartOffset: number = 0;
   isExtension: boolean = false;
 
+  //
+  orientation: Orientation = Orientation.Vertical;
+  orientationWidth: number;
+  orientationHeight: number;
+
   constructor(props: ChartProps<Type>) {
     const { width, height, data, debug } = props;
 
@@ -30,6 +36,13 @@ export class Chart<Type extends DataType> implements ChartProps<Type> {
     this.height = height;
     this.data = data;
     this.debug = debug;
+
+    this.orientation;
+
+    this.orientationWidth =
+      this.orientation === Orientation.Horizontal ? this.width : this.height;
+    this.orientationHeight =
+      this.orientation === Orientation.Horizontal ? this.height : this.width;
 
     // Canvas
     this.canvas = new OffscreenCanvas(width, height);
