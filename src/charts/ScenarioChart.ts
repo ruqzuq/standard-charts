@@ -1,25 +1,26 @@
-import { ChartTypes } from '../..';
-import { ColumnAxis } from '../../base/Axis';
-import { Box } from '../../base/Box';
-import { Scenario, extractParallelValues } from '../../base/Data';
-import { ParallelDataType } from '../../base/DataTypes';
-import { Rect } from '../../base/Rect';
-import { Text } from '../../base/Text';
-import { round } from '../../base/utils/Math';
-import { MaxMeasure } from '../../base/utils/MaxMeasure';
-import { Chart, ChartProps } from '../Chart';
-import { Constants } from '../Constants';
-import { SideExtension, SideExtensionProps } from './SideExtension';
-import { VarianceColumnChart } from './VarianceColumnChart';
+import { ChartTypes } from '..';
+import { ColumnAxis } from '../base/Axis';
+import { Box } from '../base/Box';
+import { Scenario, extractParallelValues } from '../base/Data';
+import { ParallelDataType } from '../base/DataTypes';
+import { Orientation, OrientationBox } from '../base/OrientationBox';
+import { OrientationText } from '../base/OrientationText';
+import { Rect } from '../base/Rect';
+import { round } from '../base/utils/Math';
+import { MaxMeasure } from '../base/utils/MaxMeasure';
+import { AxisExtension, AxisExtensionProps } from '../extensions/AxisExtension';
+import { Chart, ChartProps } from './Chart';
+import { Constants } from './Constants';
+import { VarianceChart } from './VarianceChart';
 
 export interface ColumnChartProps extends ChartProps<ParallelDataType> {
   chartType: ChartTypes.Column;
-  top?: VarianceTopExtension[];
-  left?: SideExtensionProps;
-  right?: SideExtensionProps;
+  variance?: VarianceExtension[];
+  start?: AxisExtensionProps;
+  end?: AxisExtensionProps;
 }
 
-export interface VarianceTopExtension {
+export interface VarianceExtension {
   variance: 'ABSOLUTE' | 'RELATIVE';
   delta: Scenario.PY | Scenario.PL;
 }
@@ -40,36 +41,43 @@ export class ColumnChart extends Chart<ParallelDataType> {
   secondaryRight: boolean;
 
   //
-  topVarianceCharts: VarianceColumnChart[] = [];
+  varianceCharts: VarianceChart[] = [];
   //
-  leftSideExtension: SideExtension;
-  rightSideExtension: SideExtension;
+  startAxisExtension: AxisExtension;
+  endAxisExtension: AxisExtension;
+
+  //
 
   constructor(props: ColumnChartProps) {
     super(props);
-    const { top, left, right } = props;
+    const { variance, start, end } = props;
 
-    if (left)
-      this.leftSideExtension = new SideExtension(left, this.context, true);
-    if (right)
-      this.rightSideExtension = new SideExtension(right, this.context, false);
+    if (start)
+      this.startAxisExtension = new AxisExtension(
+        start,
+        this.context,
+        true,
+        this.orientation
+      );
+    if (end)
+      this.endAxisExtension = new AxisExtension(
+        end,
+        this.context,
+        false,
+        this.orientation
+      );
 
     this.fontSize = 8;
     [10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32].forEach((fontSize) => {
       if (!this.fontTooBig(fontSize)) this.fontSize = fontSize;
     });
 
-    if (left) {
-      this.leftSideExtension.fontSize = this.fontSize;
-      this.leftSideExtension.width = this.leftSideExtension.fontToWidth(
-        this.fontSize
-      );
+    if (start) {
+      this.startAxisExtension.setSize(this.fontSize);
     }
-    if (right) {
-      this.rightSideExtension.fontSize = this.fontSize;
-      this.rightSideExtension.width = this.rightSideExtension.fontToWidth(
-        this.fontSize
-      );
+    this.axisExtensionOffset = this.startAxisExtension?.orientationWidth ?? 0;
+    if (end) {
+      this.endAxisExtension.setSize(this.fontSize, this.axisExtensionOffset);
     }
 
     this.secondaryLeft = this.data.some(
@@ -79,12 +87,10 @@ export class ColumnChart extends Chart<ParallelDataType> {
       (dataPoint) => extractParallelValues(dataPoint).right.value
     );
 
-    this.axisExtensionOffset = this.leftSideExtension?.width ?? 0;
-
     this.axisWidth =
-      this.width -
+      this.orientationWidth -
       this.axisExtensionOffset -
-      (this.rightSideExtension?.width ?? 0) -
+      (this.endAxisExtension?.orientationWidth ?? 0) -
       2 * Constants.ChartPadding;
 
     this.axisElementWidth = this.axisWidth / this.data.length;
@@ -100,9 +106,9 @@ export class ColumnChart extends Chart<ParallelDataType> {
     this.columnMargin =
       Constants.ColumnMarginToWidthRelation * this.axisElementWidth;
 
-    if (top) {
-      top.forEach((extension) => {
-        this.topExtension(extension);
+    if (variance) {
+      variance.forEach((extension) => {
+        this.varianceExtension(extension);
       });
     }
   }
@@ -114,39 +120,48 @@ export class ColumnChart extends Chart<ParallelDataType> {
       const { positiveStackValue, negativeStackValue } =
         extractParallelValues(dataPoint).primary;
 
-      const keyText = new Text(this.context, dataPoint.key, { size: fontSize });
-      const positiveStackValueText = new Text(
+      const keyText = new OrientationText(
+        this.context,
+        dataPoint.key,
+        { size: fontSize },
+        this.orientation
+      );
+      const positiveStackValueText = new OrientationText(
         this.context,
         positiveStackValue,
-        { size: fontSize }
+        { size: fontSize },
+        this.orientation
       );
-      const negativeStackValueText = new Text(
+      const negativeStackValueText = new OrientationText(
         this.context,
         negativeStackValue,
-        { size: fontSize }
+        { size: fontSize },
+        this.orientation
       );
 
       if (positiveStackValue) {
         maxTextWidth.addEntry(
-          positiveStackValueText.boxWidth + 2 * Constants.ColumnPadding
+          positiveStackValueText.orientationBoxWidth +
+            2 * Constants.ColumnPadding
         );
       }
       if (negativeStackValue) {
         maxTextWidth.addEntry(
-          negativeStackValueText.boxWidth + 2 * Constants.ColumnPadding
+          negativeStackValueText.orientationBoxWidth +
+            2 * Constants.ColumnPadding
         );
       }
 
-      maxTextWidth.addEntry(keyText.boxWidth);
+      maxTextWidth.addEntry(keyText.orientationBoxWidth);
     });
 
     const elementWidth = maxTextWidth.max / Constants.ColumnToWidthRelation;
 
     return (
       this.data.length * elementWidth +
-        (this.leftSideExtension?.fontToWidth(fontSize) ?? 0) +
-        (this.rightSideExtension?.fontToWidth(fontSize) ?? 0) >
-      this.width - 2 * Constants.ChartPadding
+        (this.startAxisExtension?.fontToWidth(fontSize) ?? 0) +
+        (this.endAxisExtension?.fontToWidth(fontSize) ?? 0) >
+      this.orientationWidth - 2 * Constants.ChartPadding
     );
   }
 
@@ -157,41 +172,56 @@ export class ColumnChart extends Chart<ParallelDataType> {
     this.data.forEach((dataPoint) => {
       const { left, primary, right } = extractParallelValues(dataPoint);
 
-      const keyText = new Text(this.context, dataPoint.key, {
-        size: this.fontSize,
-      });
+      const keyText = new OrientationText(
+        this.context,
+        dataPoint.key,
+        {
+          size: this.fontSize,
+        },
+        this.orientation
+      );
 
       const { positiveStackValue, negativeStackValue } = primary;
 
-      const positiveValueText = new Text(this.context, positiveStackValue, {
-        size: this.fontSize,
-      });
-      const negativeValueText = new Text(this.context, negativeStackValue, {
-        size: this.fontSize,
-      });
+      const positiveValueText = new OrientationText(
+        this.context,
+        positiveStackValue,
+        {
+          size: this.fontSize,
+        },
+        this.orientation
+      );
+      const negativeValueText = new OrientationText(
+        this.context,
+        negativeStackValue,
+        {
+          size: this.fontSize,
+        },
+        this.orientation
+      );
 
       if (primary.positiveStackValue && primary.negativeStackValue) {
         negativeMax.addEntry(
           scale * Math.abs(negativeStackValue),
-          negativeValueText.boxHeight,
-          keyText.boxHeight
+          negativeValueText.orientationBoxHeight,
+          keyText.orientationBoxHeight
         );
         positiveMax.addEntry(
           scale * positiveStackValue,
-          positiveValueText.boxHeight
+          positiveValueText.orientationBoxHeight
         );
       } else if (positiveStackValue) {
-        negativeMax.addEntry(keyText.boxHeight);
+        negativeMax.addEntry(keyText.orientationBoxHeight);
         positiveMax.addEntry(
           scale * positiveStackValue,
-          positiveValueText.boxHeight
+          positiveValueText.orientationBoxHeight
         );
       } else if (negativeStackValue) {
         negativeMax.addEntry(
           scale * Math.abs(negativeStackValue),
-          negativeValueText.boxHeight
+          negativeValueText.orientationBoxHeight
         );
-        positiveMax.addEntry(keyText.boxHeight);
+        positiveMax.addEntry(keyText.orientationBoxHeight);
       }
 
       [left, right].forEach(({ value }) => {
@@ -206,9 +236,9 @@ export class ColumnChart extends Chart<ParallelDataType> {
     });
 
     // Side-extensions
-    [this.leftSideExtension, this.rightSideExtension].forEach((extension) => {
+    [this.startAxisExtension, this.endAxisExtension].forEach((extension) => {
       if (extension) {
-        const extensionHeight = this.leftSideExtension.scaleToHeight(scale);
+        const extensionHeight = extension.scaleToHeight(scale);
         if (extensionHeight > 0) {
           positiveMax.addEntry(extensionHeight);
         } else {
@@ -219,9 +249,9 @@ export class ColumnChart extends Chart<ParallelDataType> {
 
     //
     let topExtensionHeight = 0;
-    this.topVarianceCharts.forEach((chart) => {
+    this.varianceCharts.forEach((chart) => {
       chart.chartOffset = topExtensionHeight;
-      const varianceHeight = chart.scaleToHeight(scale);
+      const varianceHeight = chart.scaleToHeight(scale, this.orientationHeight);
       chart.height = varianceHeight;
       topExtensionHeight += varianceHeight;
     });
@@ -231,17 +261,20 @@ export class ColumnChart extends Chart<ParallelDataType> {
     this.chartOffset = topExtensionHeight;
 
     // annahme, dass scaling präziser wird
-    this.axisOrigin = this.height - Constants.ChartPadding - negativeMax.max;
+    this.axisOrigin =
+      this.orientation === Orientation.Horizontal
+        ? this.orientationHeight - Constants.ChartPadding - negativeMax.max
+        : Constants.ChartPadding + negativeMax.max;
 
     const height =
       negativeMax.max + positiveMax.max + 2 * Constants.ChartPadding;
 
-    return topExtensionHeight + height > this.height;
+    return topExtensionHeight + height > this.orientationHeight;
   }
 
   draw(scale: number) {
     //
-    this.topVarianceCharts.forEach((chart) => {
+    this.varianceCharts.forEach((chart) => {
       chart.draw(scale);
     });
     //
@@ -251,45 +284,60 @@ export class ColumnChart extends Chart<ParallelDataType> {
     this.data.forEach((dataPoint, index) => {
       const { left, primary, right } = extractParallelValues(dataPoint);
 
-      const origin = new Box(
-        {
-          x:
-            Constants.ChartPadding +
-            this.axisExtensionOffset +
-            (this.columnMargin + this.columnWidth / 2) +
-            (this.secondaryLeft
-              ? Constants.SecondaryColumnToWidthRelation * this.axisElementWidth
-              : 0) +
-            index * this.axisElementWidth,
-          y: this.axisOrigin,
-        },
-        this.axisElementWidth,
-        0
+      const origin = new OrientationBox(
+        new Box(
+          {
+            x:
+              Constants.ChartPadding +
+              this.axisExtensionOffset +
+              (this.columnMargin + this.columnWidth / 2) +
+              (this.secondaryLeft
+                ? Constants.SecondaryColumnToWidthRelation *
+                  this.axisElementWidth
+                : 0) +
+              index * this.axisElementWidth,
+            y: this.axisOrigin,
+          },
+          this.axisElementWidth,
+          0
+        ),
+        this.orientation,
+        true
       );
 
       [left, right].forEach(({ value, scenario }, index) => {
-        const secondaryOrigin = new Box(
-          {
-            x:
-              origin.x +
-              (index === 0 ? -1 : 1) *
-                Constants.SecondaryColumnToWidthRelation *
-                this.axisElementWidth,
-            y: origin.y,
-          },
-          0,
-          0
+        const secondaryOrigin = new OrientationBox(
+          new Box(
+            {
+              x:
+                (this.orientation === Orientation.Horizontal
+                  ? origin.x
+                  : origin.y) +
+                (index === 0 ? -1 : 1) *
+                  Constants.SecondaryColumnToWidthRelation *
+                  this.axisElementWidth,
+              y:
+                this.orientation === Orientation.Horizontal
+                  ? origin.y
+                  : origin.x,
+            },
+            0,
+            0
+          ),
+          this.orientation,
+          true
         );
+
         let valueBox;
         if (value) {
           if (value >= 0) {
-            valueBox = Box.fromTopMiddle(
+            valueBox = OrientationBox.fromNorth(
               secondaryOrigin,
               this.columnWidth,
               scale * value
             );
           } else {
-            valueBox = Box.fromBottomMiddle(
+            valueBox = OrientationBox.fromSouth(
               secondaryOrigin,
               this.columnWidth,
               scale * Math.abs(value)
@@ -299,9 +347,14 @@ export class ColumnChart extends Chart<ParallelDataType> {
         }
       });
 
-      const keyText = new Text(this.context, dataPoint.key, {
-        size: this.fontSize,
-      });
+      const keyText = new OrientationText(
+        this.context,
+        dataPoint.key,
+        {
+          size: this.fontSize,
+        },
+        this.orientation
+      );
 
       let positiveAnchor = origin;
       let negativeAnchor = origin;
@@ -309,14 +362,14 @@ export class ColumnChart extends Chart<ParallelDataType> {
       primary.values.forEach(({ value, scenario }) => {
         let valueBox;
         if (value >= 0) {
-          valueBox = Box.fromTopMiddle(
+          valueBox = OrientationBox.fromNorth(
             positiveAnchor,
             this.columnWidth,
             scale * value
           );
           positiveAnchor = valueBox;
         } else {
-          valueBox = Box.fromBottomMiddle(
+          valueBox = OrientationBox.fromSouth(
             negativeAnchor,
             this.columnWidth,
             scale * Math.abs(value)
@@ -328,28 +381,38 @@ export class ColumnChart extends Chart<ParallelDataType> {
 
       const { positiveStackValue, negativeStackValue } = primary;
 
-      const positiveValueText = new Text(this.context, positiveStackValue, {
-        size: this.fontSize,
-      });
-      const negativeValueText = new Text(this.context, negativeStackValue, {
-        size: this.fontSize,
-      });
+      const positiveValueText = new OrientationText(
+        this.context,
+        positiveStackValue,
+        {
+          size: this.fontSize,
+        },
+        this.orientation
+      );
+      const negativeValueText = new OrientationText(
+        this.context,
+        negativeStackValue,
+        {
+          size: this.fontSize,
+        },
+        this.orientation
+      );
 
       if (positiveStackValue && negativeStackValue) {
-        positiveValueText.placeTopMiddle(positiveAnchor);
-        negativeValueText.placeBottomMiddle(negativeAnchor);
-        keyText.placeBottomMiddle(negativeValueText.box);
+        positiveValueText.placeNorth(positiveAnchor);
+        negativeValueText.placeSouth(negativeAnchor);
+        keyText.placeSouth(negativeValueText.box);
         //
         positiveValueText.draw(this.context, this.debug);
         negativeValueText.draw(this.context, this.debug);
       } else if (positiveStackValue) {
-        positiveValueText.placeTopMiddle(positiveAnchor);
-        keyText.placeBottomMiddle(origin);
+        positiveValueText.placeNorth(positiveAnchor);
+        keyText.placeSouth(origin);
         //
         positiveValueText.draw(this.context, this.debug);
       } else if (negativeStackValue) {
-        negativeValueText.placeBottomMiddle(negativeAnchor);
-        keyText.placeTopMiddle(origin);
+        negativeValueText.placeSouth(negativeAnchor);
+        keyText.placeNorth(origin);
         //
         negativeValueText.draw(this.context, this.debug);
       }
@@ -361,16 +424,17 @@ export class ColumnChart extends Chart<ParallelDataType> {
         x: Constants.ChartPadding + this.axisExtensionOffset,
         y: this.axisOrigin,
       },
-      this.axisWidth
+      this.axisWidth,
+      this.orientation
     );
     axis.draw(this.context);
     // Side extensions
-    this.leftSideExtension?.draw(scale, this.axisOrigin, this.axisWidth);
-    this.rightSideExtension?.draw(scale, this.axisOrigin, this.axisWidth);
+    this.startAxisExtension?.draw(scale, this.axisOrigin, this.axisWidth);
+    this.endAxisExtension?.draw(scale, this.axisOrigin, this.axisWidth);
   }
 
-  topExtension(extension: VarianceTopExtension) {
-    const varianceChart = new VarianceColumnChart({
+  varianceExtension(extension: VarianceExtension) {
+    const varianceChart = new VarianceChart({
       chartType: ChartTypes.VarianceColumn,
       variance: extension.variance,
       height: 0,
@@ -413,6 +477,6 @@ export class ColumnChart extends Chart<ParallelDataType> {
     varianceChart.isExtension = true;
     varianceChart.axisExtensionOffset = this.axisExtensionOffset;
 
-    this.topVarianceCharts.push(varianceChart);
+    this.varianceCharts.push(varianceChart);
   }
 }
