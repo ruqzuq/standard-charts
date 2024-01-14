@@ -399,6 +399,12 @@ export class ColumnChart extends Chart<ParallelDataType> {
         this.orientation
       );
 
+      // Prevent text from being rendered above the axis.
+      const axisTextOrigin = new OrientationBox(
+        Box.fromCenter(origin, 4, 4),
+        this.orientation
+      );
+
       if (positiveStackValue && negativeStackValue) {
         positiveValueText.placeNorth(positiveAnchor);
         negativeValueText.placeSouth(negativeAnchor);
@@ -408,12 +414,12 @@ export class ColumnChart extends Chart<ParallelDataType> {
         negativeValueText.draw(this.context, this.debug);
       } else if (positiveStackValue) {
         positiveValueText.placeNorth(positiveAnchor);
-        keyText.placeSouth(origin);
+        keyText.placeSouth(axisTextOrigin);
         //
         positiveValueText.draw(this.context, this.debug);
       } else if (negativeStackValue) {
         negativeValueText.placeSouth(negativeAnchor);
-        keyText.placeNorth(origin);
+        keyText.placeNorth(axisTextOrigin);
         //
         negativeValueText.draw(this.context, this.debug);
       }
