@@ -1,5 +1,6 @@
 import { Color } from './Color';
 import { Scenario } from './Data';
+import { Orientation } from './OrientationBox';
 import { Rect } from './Rect';
 import { Position } from './Types';
 
@@ -7,11 +8,13 @@ export class ColumnAxis {
   x: number;
   y: number;
   width: number;
+  orientation: Orientation;
 
-  constructor({ x, y }: Position, width: number) {
-    this.x = x;
-    this.y = y;
+  constructor({ x, y }: Position, width: number, orientation: Orientation) {
+    this.x = orientation === Orientation.Horizontal ? x : y;
+    this.y = orientation === Orientation.Horizontal ? y : x;
     this.width = width;
+    this.orientation = orientation;
   }
 
   draw(
@@ -36,14 +39,28 @@ export class ColumnAxis {
     }
   }
 
+  fillRect(
+    context: OffscreenCanvasRenderingContext2D,
+    x: number,
+    y: number,
+    height: number
+  ) {
+    context.fillRect(
+      x,
+      y,
+      this.orientation === Orientation.Horizontal ? this.width : height,
+      this.orientation === Orientation.Horizontal ? height : this.width
+    );
+  }
+
   drawPY(context: OffscreenCanvasRenderingContext2D) {
     context.fillStyle = Color.Fill.PY;
-    context.fillRect(this.x, this.y - 2, this.width, 4);
+    this.fillRect(context, this.x, this.y - 2, 4);
   }
 
   drawAC(context: OffscreenCanvasRenderingContext2D) {
     context.fillStyle = Color.Fill.AC;
-    context.fillRect(this.x, this.y - 1, this.width, 2);
+    this.fillRect(context, this.x, this.y - 1, 2);
   }
 
   drawFC(context: OffscreenCanvasRenderingContext2D) {
@@ -51,16 +68,16 @@ export class ColumnAxis {
       Rect.createPinstripeCanvas(undefined),
       'repeat'
     );
-    context.fillRect(this.x, this.y - 2, this.width, 4);
+    this.fillRect(context, this.x, this.y - 2, 4);
     //
     context.fillStyle = Color.Stroke.FC;
-    context.fillRect(this.x, this.y - 2, this.width, 1);
-    context.fillRect(this.x, this.y + 1, this.width, 1);
+    this.fillRect(context, this.x, this.y - 2, 1);
+    this.fillRect(context, this.x, this.y + 1, 1);
   }
 
   drawPL(context: OffscreenCanvasRenderingContext2D) {
     context.fillStyle = Color.Stroke.PL;
-    context.fillRect(this.x, this.y - 2, this.width, 1);
-    context.fillRect(this.x, this.y + 1, this.width, 1);
+    this.fillRect(context, this.x, this.y - 2, 1);
+    this.fillRect(context, this.x, this.y + 1, 1);
   }
 }
