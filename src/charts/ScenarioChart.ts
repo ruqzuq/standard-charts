@@ -1,5 +1,6 @@
 import { ColumnAxis } from '../base/Axis';
 import { Box } from '../base/Box';
+import { Color } from '../base/Color';
 import { Scenario, extractParallelValues } from '../base/Data';
 import { ParallelDataType } from '../base/DataTypes';
 import { Orientation } from '../base/orientation/Orientation';
@@ -8,6 +9,7 @@ import { OrientationText } from '../base/orientation/OrientationText';
 import { Rect } from '../base/Rect';
 import { round } from '../base/utils/Math';
 import { MaxMeasure } from '../base/utils/MaxMeasure';
+import { formatValue } from '../base/utils/ValueFormat';
 import { AxisExtension, AxisExtensionProps } from '../extensions/AxisExtension';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
@@ -16,10 +18,11 @@ import { VarianceChart } from './VarianceChart';
 
 export interface ScenarioChartProps extends ChartProps<ParallelDataType> {
   type: ChartType.Scenario;
-  style: ChartStyle.Column | ChartStyle.Bar;
+  style: ChartStyle.Column | ChartStyle.Line | ChartStyle.Bar;
   variance?: VarianceExtension[];
   start?: AxisExtensionProps;
   end?: AxisExtensionProps;
+  percentage?: boolean;
 }
 
 export interface VarianceExtension {
@@ -47,26 +50,32 @@ export class ScenarioChart extends Chart<ParallelDataType> {
   //
   startAxisExtension: AxisExtension;
   endAxisExtension: AxisExtension;
-
   //
+  pointSize: number = 0; // Line-Chart
+  //
+  percentage: boolean;
 
   constructor(props: ScenarioChartProps) {
     super(props);
-    const { variance, start, end } = props;
+    const { variance, start, end, percentage } = props;
+
+    this.percentage = percentage;
 
     if (start)
       this.startAxisExtension = new AxisExtension(
         start,
         this.context,
         true,
-        this.orientation
+        this.orientation,
+        this.percentage
       );
     if (end)
       this.endAxisExtension = new AxisExtension(
         end,
         this.context,
         false,
-        this.orientation
+        this.orientation,
+        this.percentage
       );
 
     this.fontSize = 8;
@@ -113,6 +122,10 @@ export class ScenarioChart extends Chart<ParallelDataType> {
         this.varianceExtension(extension);
       });
     }
+
+    if (this.style === ChartStyle.Line) {
+      this.pointSize = Constants.PointToWidthRelation * this.axisElementWidth;
+    }
   }
 
   fontTooBig(fontSize: number) {
@@ -130,13 +143,13 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       );
       const positiveStackValueText = new OrientationText(
         this.context,
-        positiveStackValue,
+        formatValue(positiveStackValue, this.percentage),
         { size: fontSize },
         this.orientation
       );
       const negativeStackValueText = new OrientationText(
         this.context,
-        negativeStackValue,
+        formatValue(negativeStackValue, this.percentage),
         { size: fontSize },
         this.orientation
       );
@@ -187,7 +200,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
 
       const positiveValueText = new OrientationText(
         this.context,
-        positiveStackValue,
+        formatValue(positiveStackValue, this.percentage),
         {
           size: this.fontSize,
         },
@@ -195,7 +208,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       );
       const negativeValueText = new OrientationText(
         this.context,
-        negativeStackValue,
+        formatValue(negativeStackValue, this.percentage),
         {
           size: this.fontSize,
         },
@@ -206,24 +219,34 @@ export class ScenarioChart extends Chart<ParallelDataType> {
         negativeMax.addEntry(
           scale * Math.abs(negativeStackValue),
           negativeValueText.orientationBoxHeight,
-          keyText.orientationBoxHeight
+          keyText.orientationBoxHeight,
+          this.pointSize / 2 // Line-Chart
         );
         positiveMax.addEntry(
           scale * positiveStackValue,
-          positiveValueText.orientationBoxHeight
+          positiveValueText.orientationBoxHeight,
+          this.pointSize / 2 // Line-Chart
         );
       } else if (positiveStackValue) {
-        negativeMax.addEntry(keyText.orientationBoxHeight);
+        negativeMax.addEntry(
+          keyText.orientationBoxHeight,
+          this.pointSize / 2 // Line-Chart
+        );
         positiveMax.addEntry(
           scale * positiveStackValue,
-          positiveValueText.orientationBoxHeight
+          positiveValueText.orientationBoxHeight,
+          this.pointSize / 2 // Line-Chart
         );
       } else if (negativeStackValue) {
         negativeMax.addEntry(
           scale * Math.abs(negativeStackValue),
-          negativeValueText.orientationBoxHeight
+          negativeValueText.orientationBoxHeight,
+          this.pointSize / 2 // Line-Chart
         );
-        positiveMax.addEntry(keyText.orientationBoxHeight);
+        positiveMax.addEntry(
+          keyText.orientationBoxHeight,
+          this.pointSize / 2 // Line-Chart
+        );
       }
 
       [left, right].forEach(({ value }) => {
@@ -361,8 +384,11 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       let positiveAnchor = origin;
       let negativeAnchor = origin;
 
+      let positiveTextAnchor;
+      let negativeTextAnchor;
+
       primary.values.forEach(({ value, scenario }) => {
-        let valueBox;
+        let valueBox: OrientationBox;
         if (value >= 0) {
           valueBox = OrientationBox.fromNorth(
             positiveAnchor,
@@ -378,14 +404,31 @@ export class ScenarioChart extends Chart<ParallelDataType> {
           );
           negativeAnchor = valueBox;
         }
-        Rect.draw(this.context, valueBox, scenario);
+
+        if (this.style === ChartStyle.Line) {
+          const lineValueBox = new OrientationBox(
+            new Box(
+              value >= 0 ? valueBox.north() : valueBox.south(),
+              this.pointSize,
+              this.pointSize
+            ),
+            this.orientation
+          );
+
+          if (value >= 0) positiveTextAnchor = lineValueBox;
+          else negativeTextAnchor = lineValueBox;
+
+          Rect.draw(this.context, lineValueBox, scenario);
+        } else {
+          Rect.draw(this.context, valueBox, scenario);
+        }
       });
 
       const { positiveStackValue, negativeStackValue } = primary;
 
       const positiveValueText = new OrientationText(
         this.context,
-        positiveStackValue,
+        formatValue(positiveStackValue, this.percentage),
         {
           size: this.fontSize,
         },
@@ -393,7 +436,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       );
       const negativeValueText = new OrientationText(
         this.context,
-        negativeStackValue,
+        formatValue(negativeStackValue, this.percentage),
         {
           size: this.fontSize,
         },
@@ -401,29 +444,39 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       );
 
       // Prevent text from being rendered above the axis.
-      const axisTextOrigin = new OrientationBox(
-        Box.fromCenter(origin, 4, 4),
-        this.orientation
-      );
+
+      const axisTextOrigin =
+        this.style !== ChartStyle.Line
+          ? OrientationBox.fromCenter(origin, 4, 4)
+          : positiveStackValue
+            ? OrientationBox.fromSouth(origin, 2, this.pointSize / 2)
+            : OrientationBox.fromNorth(origin, 2, this.pointSize / 2);
 
       if (positiveStackValue && negativeStackValue) {
-        positiveValueText.placeNorth(positiveAnchor);
-        negativeValueText.placeSouth(negativeAnchor);
+        positiveValueText.placeNorth(positiveTextAnchor ?? positiveAnchor);
+        negativeValueText.placeSouth(negativeTextAnchor ?? negativeAnchor);
         keyText.placeSouth(negativeValueText.box);
+        //
+        axisTextOrigin.width = 0;
         //
         positiveValueText.draw(this.context, this.debug);
         negativeValueText.draw(this.context, this.debug);
       } else if (positiveStackValue) {
-        positiveValueText.placeNorth(positiveAnchor);
+        positiveValueText.placeNorth(positiveTextAnchor ?? positiveAnchor);
         keyText.placeSouth(axisTextOrigin);
         //
         positiveValueText.draw(this.context, this.debug);
       } else if (negativeStackValue) {
-        negativeValueText.placeSouth(negativeAnchor);
+        negativeValueText.placeSouth(negativeTextAnchor ?? negativeAnchor);
         keyText.placeNorth(axisTextOrigin);
         //
         negativeValueText.draw(this.context, this.debug);
       }
+
+      if (this.style === ChartStyle.Line) {
+        Rect.drawFill(this.context, axisTextOrigin, Color.Fill.AC);
+      }
+
       keyText.draw(this.context, this.debug);
     });
     // Axis
