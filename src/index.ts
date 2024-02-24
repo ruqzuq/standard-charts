@@ -1,3 +1,4 @@
+import { Line } from './base/Line';
 import { Rect } from './base/Rect';
 import { Text } from './base/Text';
 import { ScenarioChart, ScenarioChartProps } from './charts/ScenarioChart';
@@ -42,6 +43,10 @@ export const StandardCharts = async (charts: ChartProps[]) => {
   chartObjects.forEach((chart) => {
     chart.draw(scale);
     //
+    Line.asyncDraw.forEach((draw) => {
+      draw();
+    });
+    //
     Rect.asyncDraw.forEach((draw) => {
       draw();
     });
@@ -50,6 +55,7 @@ export const StandardCharts = async (charts: ChartProps[]) => {
       draw();
     });
     // Clear static cache.
+    while (Line.asyncDraw.length > 0) Line.asyncDraw.pop();
     while (Rect.asyncDraw.length > 0) Rect.asyncDraw.pop();
     while (Text.asyncDraw.length > 0) Text.asyncDraw.pop();
   });

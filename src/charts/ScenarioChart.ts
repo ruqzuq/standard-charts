@@ -1,12 +1,14 @@
 import { ColumnAxis } from '../base/Axis';
 import { Box } from '../base/Box';
 import { Color } from '../base/Color';
-import { Scenario, extractParallelValues } from '../base/Data';
+import { Scenario, Scenarios, extractParallelValues } from '../base/Data';
 import { ParallelDataType } from '../base/DataTypes';
+import { Line } from '../base/Line';
 import { Orientation } from '../base/orientation/Orientation';
 import { OrientationBox } from '../base/orientation/OrientationBox';
 import { OrientationText } from '../base/orientation/OrientationText';
 import { Rect } from '../base/Rect';
+import { Position } from '../base/Types';
 import { round } from '../base/utils/Math';
 import { MaxMeasure } from '../base/utils/MaxMeasure';
 import { formatValue } from '../base/utils/ValueFormat';
@@ -306,6 +308,13 @@ export class ScenarioChart extends Chart<ParallelDataType> {
 
     this.drawDebug();
 
+    const scenarioLine: Record<Scenario, Position[]> = {
+      [Scenario.PY]: [],
+      [Scenario.AC]: [],
+      [Scenario.FC]: [],
+      [Scenario.PL]: [],
+    };
+
     this.data.forEach((dataPoint, index) => {
       const { left, primary, right } = extractParallelValues(dataPoint);
 
@@ -331,27 +340,30 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       );
 
       [left, right].forEach(({ value, scenario }, index) => {
-        const secondaryOrigin = new OrientationBox(
-          new Box(
-            {
-              x:
-                (this.orientation === Orientation.Horizontal
-                  ? origin.x
-                  : origin.y) +
-                (index === 0 ? -1 : 1) *
-                  Constants.SecondaryColumnToWidthRelation *
-                  this.axisElementWidth,
-              y:
-                this.orientation === Orientation.Horizontal
-                  ? origin.y
-                  : origin.x,
-            },
-            0,
-            0
-          ),
-          this.orientation,
-          true
-        );
+        const secondaryOrigin =
+          this.style === ChartStyle.Line
+            ? origin
+            : new OrientationBox(
+                new Box(
+                  {
+                    x:
+                      (this.orientation === Orientation.Horizontal
+                        ? origin.x
+                        : origin.y) +
+                      (index === 0 ? -1 : 1) *
+                        Constants.SecondaryColumnToWidthRelation *
+                        this.axisElementWidth,
+                    y:
+                      this.orientation === Orientation.Horizontal
+                        ? origin.y
+                        : origin.x,
+                  },
+                  0,
+                  0
+                ),
+                this.orientation,
+                true
+              );
 
         let valueBox;
         if (value) {
@@ -368,7 +380,21 @@ export class ScenarioChart extends Chart<ParallelDataType> {
               scale * Math.abs(value)
             );
           }
-          Rect.draw(this.context, valueBox, scenario);
+
+          if (this.style === ChartStyle.Line) {
+            const lineValueBox = new OrientationBox(
+              new Box(
+                value >= 0 ? valueBox.north() : valueBox.south(),
+                this.pointSize,
+                this.pointSize
+              ),
+              this.orientation
+            );
+            Rect.draw(this.context, lineValueBox, scenario);
+            scenarioLine[scenario].push(lineValueBox.center());
+          } else {
+            Rect.draw(this.context, valueBox, scenario);
+          }
         }
       });
 
@@ -419,6 +445,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
           else negativeTextAnchor = lineValueBox;
 
           Rect.draw(this.context, lineValueBox, scenario);
+          scenarioLine[scenario].push(lineValueBox.center());
         } else {
           Rect.draw(this.context, valueBox, scenario);
         }
@@ -479,6 +506,18 @@ export class ScenarioChart extends Chart<ParallelDataType> {
 
       keyText.draw(this.context, this.debug);
     });
+    // Line
+    if (this.style === ChartStyle.Line) {
+      Scenarios.forEach((scenario) => {
+        const line = scenarioLine[scenario];
+        for (let i = 0; i < line.length - 1; i++) {
+          const start = line[i];
+          const end = line[i + 1];
+          Line.draw(this.context, start, end, scenario);
+        }
+      });
+    }
+
     // Axis
     const axis = new ColumnAxis(
       {
