@@ -5,12 +5,14 @@ import { OrientationText } from '../base/orientation/OrientationText';
 import { Rect } from '../base/Rect';
 import { formatValue } from '../base/utils/ValueFormat';
 import { Constants } from '../charts/Constants';
+import { ExtensionType } from './Types';
 
-export interface AxisExtensionProps {
+export interface IndexExtensionProps {
+  extension: ExtensionType.Index;
   value: number;
 }
 
-export class AxisExtension {
+export class IndexExtension {
   value: number;
   context: OffscreenCanvasRenderingContext2D;
 
@@ -26,7 +28,7 @@ export class AxisExtension {
   percentage: boolean;
 
   constructor(
-    props: AxisExtensionProps,
+    props: IndexExtensionProps,
     context: OffscreenCanvasRenderingContext2D,
     isLeft: boolean,
     orientation: Orientation,
