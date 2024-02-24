@@ -3,6 +3,7 @@ import { Orientation } from '../base/orientation/Orientation';
 import { OrientationBox } from '../base/orientation/OrientationBox';
 import { OrientationText } from '../base/orientation/OrientationText';
 import { Rect } from '../base/Rect';
+import { formatValue } from '../base/utils/ValueFormat';
 import { Constants } from '../charts/Constants';
 
 export interface AxisExtensionProps {
@@ -22,29 +23,33 @@ export class AxisExtension {
 
   indexArrowSize: number;
 
+  percentage: boolean;
+
   constructor(
     props: AxisExtensionProps,
     context: OffscreenCanvasRenderingContext2D,
     isLeft: boolean,
-    orientation: Orientation
+    orientation: Orientation,
+    percentage: boolean
   ) {
     this.value = props.value;
     this.context = context;
     this.isLeft = isLeft;
     this.orientation = orientation;
+    this.percentage = percentage;
   }
 
   fontToWidth(fontSize: number) {
     const valueText = new OrientationText(
       this.context,
-      this.value,
+      formatValue(this.value, this.percentage),
       {
         size: fontSize,
       },
       this.orientation
     );
 
-    return valueText.orientationBoxWidth + fontSize;
+    return valueText.orientationBoxWidth + fontSize / 2;
   }
 
   setSize(fontSize: number, axisExtensionOffset: number = 0) {
@@ -57,7 +62,7 @@ export class AxisExtension {
   scaleToHeight(scale: number) {
     const valueText = new OrientationText(
       this.context,
-      this.value,
+      formatValue(this.value, this.percentage),
       {
         size: this.fontSize,
       },
@@ -123,7 +128,7 @@ export class AxisExtension {
     // Text
     const valueText = new OrientationText(
       this.context,
-      this.value,
+      formatValue(this.value, this.percentage),
       {
         size: this.fontSize,
       },
@@ -131,6 +136,6 @@ export class AxisExtension {
     );
     if (this.isLeft) valueText.placeWest(index);
     else valueText.placeEast(index);
-    valueText.draw(this.context, false);
+    valueText.draw(this.context, false); // todo debug text
   }
 }
