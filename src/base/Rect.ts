@@ -125,40 +125,40 @@ export class Rect {
     });
     const color = customColor ?? '#404040';
 
-    const CANVAS_SIDE_LENGTH = 8;
-    const WIDTH = CANVAS_SIDE_LENGTH;
-    const HEIGHT = CANVAS_SIDE_LENGTH;
-    const DIVISIONS = 4;
+    const canvasSideLength = 8;
+    const canvasWidth = canvasSideLength;
+    const canvasHeight = canvasSideLength;
+    const divisions = 4;
 
-    patternCanvas.width = WIDTH;
-    patternCanvas.height = HEIGHT;
+    patternCanvas.width = canvasWidth;
+    patternCanvas.height = canvasHeight;
     pctx.fillStyle = color;
 
     // Top line
     pctx.beginPath();
-    pctx.moveTo(0, HEIGHT * (1 / DIVISIONS));
-    pctx.lineTo(WIDTH * (1 / DIVISIONS), 0);
+    pctx.moveTo(0, canvasHeight * (1 / divisions));
+    pctx.lineTo(canvasWidth * (1 / divisions), 0);
     pctx.lineTo(0, 0);
-    pctx.lineTo(0, HEIGHT * (1 / DIVISIONS));
+    pctx.lineTo(0, canvasHeight * (1 / divisions));
     pctx.fill();
 
     // Middle line
     pctx.beginPath();
-    pctx.moveTo(WIDTH, HEIGHT * (1 / DIVISIONS));
-    pctx.lineTo(WIDTH * (1 / DIVISIONS), HEIGHT);
-    pctx.lineTo(0, HEIGHT);
-    pctx.lineTo(0, HEIGHT * ((DIVISIONS - 1) / DIVISIONS));
-    pctx.lineTo(WIDTH * ((DIVISIONS - 1) / DIVISIONS), 0);
-    pctx.lineTo(WIDTH, 0);
-    pctx.lineTo(WIDTH, HEIGHT * (1 / DIVISIONS));
+    pctx.moveTo(canvasWidth, canvasHeight * (1 / divisions));
+    pctx.lineTo(canvasWidth * (1 / divisions), canvasHeight);
+    pctx.lineTo(0, canvasHeight);
+    pctx.lineTo(0, canvasHeight * ((divisions - 1) / divisions));
+    pctx.lineTo(canvasWidth * ((divisions - 1) / divisions), 0);
+    pctx.lineTo(canvasWidth, 0);
+    pctx.lineTo(canvasWidth, canvasHeight * (1 / divisions));
     pctx.fill();
 
     // Bottom line
     pctx.beginPath();
-    pctx.moveTo(WIDTH, HEIGHT * ((DIVISIONS - 1) / DIVISIONS));
-    pctx.lineTo(WIDTH * ((DIVISIONS - 1) / DIVISIONS), HEIGHT);
-    pctx.lineTo(WIDTH, HEIGHT);
-    pctx.lineTo(WIDTH, HEIGHT * ((DIVISIONS - 1) / DIVISIONS));
+    pctx.moveTo(canvasWidth, canvasHeight * ((divisions - 1) / divisions));
+    pctx.lineTo(canvasWidth * ((divisions - 1) / divisions), canvasHeight);
+    pctx.lineTo(canvasWidth, canvasHeight);
+    pctx.lineTo(canvasWidth, canvasHeight * ((divisions - 1) / divisions));
     pctx.fill();
 
     return patternCanvas;
