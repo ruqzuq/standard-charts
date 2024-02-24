@@ -7,6 +7,8 @@ export enum Scenario {
   PL = 'PL',
 }
 
+export const Scenarios = [Scenario.PY, Scenario.AC, Scenario.FC, Scenario.PL];
+
 export type Data<Type extends DataType> = ({ key: string } & Type)[];
 
 export const stackValues = (metaDataPoints) => {
