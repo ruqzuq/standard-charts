@@ -4,6 +4,8 @@ import { Scenario } from './Data';
 import { Debug } from './utils/Debug';
 
 export class Rect {
+  static asyncDraw: (() => void)[] = [];
+
   static drawDebug(context: OffscreenCanvasRenderingContext2D, box: Box) {
     context.lineWidth = 2;
     context.strokeStyle = Debug.color();
@@ -34,76 +36,86 @@ export class Rect {
 
   // todo refactor Rect drawing
   static drawFill(context, box, color) {
-    context.fillStyle = color;
-    context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+    Rect.asyncDraw.push(() => {
+      context.fillStyle = color;
+      context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+    });
   }
 
   static drawPY(context: OffscreenCanvasRenderingContext2D, box: Box) {
-    context.fillStyle = Color.Fill.PY;
-    context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+    Rect.asyncDraw.push(() => {
+      context.fillStyle = Color.Fill.PY;
+      context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+    });
   }
   static drawAC(
     context: OffscreenCanvasRenderingContext2D,
     box: Box,
     customColor: string
   ) {
-    context.fillStyle = customColor ?? Color.Fill.AC;
-    context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+    Rect.asyncDraw.push(() => {
+      context.fillStyle = customColor ?? Color.Fill.AC;
+      context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+    });
   }
   static drawFC(
     context: OffscreenCanvasRenderingContext2D,
     box: Box,
     customColor
   ) {
-    context.fillStyle = Color.Fill.FC;
-    context.fillRect(
-      box.drawX() + 1,
-      box.drawY() + 1,
-      box.width - 2,
-      box.height - 2
-    );
-    //
-    context.fillStyle = context.createPattern(
-      this.createPinstripeCanvas(customColor),
-      'repeat'
-    );
-    context.fillRect(
-      box.drawX() + 1,
-      box.drawY() + 1,
-      box.width - 2,
-      box.height - 2
-    );
-    //
-    context.lineWidth = 2;
-    context.strokeStyle = customColor ?? Color.Stroke.FC;
-    context.strokeRect(
-      box.drawX() + 1,
-      box.drawY() + 1,
-      box.width - 2,
-      box.height - 2
-    );
+    Rect.asyncDraw.push(() => {
+      context.fillStyle = Color.Fill.FC;
+      context.fillRect(
+        box.drawX() + 1,
+        box.drawY() + 1,
+        box.width - 2,
+        box.height - 2
+      );
+      //
+      context.fillStyle = context.createPattern(
+        this.createPinstripeCanvas(customColor),
+        'repeat'
+      );
+      context.fillRect(
+        box.drawX() + 1,
+        box.drawY() + 1,
+        box.width - 2,
+        box.height - 2
+      );
+      //
+      context.lineWidth = 2;
+      context.strokeStyle = customColor ?? Color.Stroke.FC;
+      context.strokeRect(
+        box.drawX() + 1,
+        box.drawY() + 1,
+        box.width - 2,
+        box.height - 2
+      );
+    });
   }
   static drawPL(
     context: OffscreenCanvasRenderingContext2D,
     box: Box,
     customColor: string
   ) {
-    context.fillStyle = Color.Fill.PL;
-    context.fillRect(
-      box.drawX() + 1,
-      box.drawY() + 1,
-      box.width - 2,
-      box.height - 2
-    );
-    //
-    context.lineWidth = 2;
-    context.strokeStyle = customColor ?? Color.Stroke.PL;
-    context.strokeRect(
-      box.drawX() + 1,
-      box.drawY() + 1,
-      box.width - 2,
-      box.height - 2
-    );
+    Rect.asyncDraw.push(() => {
+      context.fillStyle = Color.Fill.PL;
+      context.fillRect(
+        box.drawX() + 1,
+        box.drawY() + 1,
+        box.width - 2,
+        box.height - 2
+      );
+      //
+      context.lineWidth = 2;
+      context.strokeStyle = customColor ?? Color.Stroke.PL;
+      context.strokeRect(
+        box.drawX() + 1,
+        box.drawY() + 1,
+        box.width - 2,
+        box.height - 2
+      );
+    });
   }
 
   static createPinstripeCanvas(customColor) {

@@ -18,7 +18,7 @@ export class Text {
   boxHeight: number;
 
   //
-  static asyncDrawing = [];
+  static asyncDraw: (() => void)[] = [];
 
   constructor(context, text, props: TextProps = {}) {
     const { bold = false, size = 10, family = 'Arial' } = props;
@@ -41,7 +41,7 @@ export class Text {
 
   // Drawing
   draw(context: OffscreenCanvasRenderingContext2D, debug: boolean = false) {
-    Text.asyncDrawing.push(() => {
+    Text.asyncDraw.push(() => {
       context.fillStyle = 'white';
       context.globalAlpha = 0.5;
       context.fillRect(

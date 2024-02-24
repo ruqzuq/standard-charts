@@ -1,3 +1,4 @@
+import { Rect } from './base/Rect';
 import { Text } from './base/Text';
 import { ScenarioChart, ScenarioChartProps } from './charts/ScenarioChart';
 import { ChartType } from './charts/Types';
@@ -40,10 +41,17 @@ export const StandardCharts = async (charts: ChartProps[]) => {
 
   chartObjects.forEach((chart) => {
     chart.draw(scale);
-    Text.asyncDrawing.forEach((draw) => {
+    //
+    Rect.asyncDraw.forEach((draw) => {
       draw();
     });
-    while (Text.asyncDrawing.length > 0) Text.asyncDrawing.pop();
+    //
+    Text.asyncDraw.forEach((draw) => {
+      draw();
+    });
+    // Clear static cache.
+    while (Rect.asyncDraw.length > 0) Rect.asyncDraw.pop();
+    while (Text.asyncDraw.length > 0) Text.asyncDraw.pop();
   });
 
   const promises = chartObjects.map(async (chart) => {
