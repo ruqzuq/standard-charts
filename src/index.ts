@@ -1,13 +1,17 @@
+import { Scenario } from './base/Data';
 import { Line } from './base/Line';
 import { Rect } from './base/Rect';
 import { Text } from './base/Text';
 import { ScenarioChart, ScenarioChartProps } from './charts/ScenarioChart';
-import { ChartType } from './charts/Types';
+import { ChartStyle, ChartType } from './charts/Types';
 import { VarianceChart, VarianceChartProps } from './charts/VarianceChart';
+import { ExtensionType } from './extensions/Types';
 
 export type ChartProps = ScenarioChartProps | VarianceChartProps;
 
 export type Chart = ScenarioChart | VarianceChart;
+
+export { ChartType, ChartStyle, Scenario, ExtensionType };
 
 /**
  * Return URL of the rendered chart png-images.
