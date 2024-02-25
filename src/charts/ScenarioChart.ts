@@ -487,8 +487,6 @@ export class ScenarioChart extends Chart<ParallelDataType> {
         negativeValueText.placeSouth(negativeTextAnchor ?? negativeAnchor);
         keyText.placeSouth(negativeValueText.box);
         //
-        axisTextOrigin.width = 0;
-        //
         positiveValueText.draw(this.context, this.debug);
         negativeValueText.draw(this.context, this.debug);
       } else if (positiveStackValue) {
