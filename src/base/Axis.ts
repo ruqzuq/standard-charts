@@ -4,7 +4,7 @@ import { Orientation } from './orientation/Orientation';
 import { Rect } from './Rect';
 import { Position } from './Types';
 
-export class ColumnAxis {
+export class Axis {
   x: number;
   y: number;
   width: number;
@@ -44,7 +44,7 @@ export class ColumnAxis {
     };
 
     if (async) {
-      ColumnAxis.asyncDraw.push(draw);
+      Axis.asyncDraw.push(draw);
     } else {
       draw();
     }

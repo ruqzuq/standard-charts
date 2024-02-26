@@ -1,4 +1,4 @@
-import { ColumnAxis } from '../base/Axis';
+import { Axis } from '../base/Axis';
 import { Box } from '../base/Box';
 import { Color } from '../base/Color';
 import { Scenario, extractSimpleValue } from '../base/Data';
@@ -133,7 +133,7 @@ export class VarianceChart extends Chart<SimpleDataType> {
   draw(scale: number) {
     this.drawDebug();
 
-    const axis = new ColumnAxis(
+    const axis = new Axis(
       {
         x: Constants.ChartPadding + this.axisExtensionOffset,
         y: this.axisOrigin,

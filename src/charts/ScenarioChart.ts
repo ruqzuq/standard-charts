@@ -1,4 +1,4 @@
-import { ColumnAxis } from '../base/Axis';
+import { Axis } from '../base/Axis';
 import { Box } from '../base/Box';
 import { Color } from '../base/Color';
 import { Scenario, Scenarios, extractParallelValues } from '../base/Data';
@@ -520,7 +520,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
     }
 
     // Axis
-    const axis = new ColumnAxis(
+    const axis = new Axis(
       {
         x: Constants.ChartPadding + this.axisExtensionOffset,
         y: this.axisOrigin,
