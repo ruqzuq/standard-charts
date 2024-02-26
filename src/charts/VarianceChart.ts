@@ -141,7 +141,7 @@ export class VarianceChart extends Chart<SimpleDataType> {
       this.axisWidth,
       this.orientation
     );
-    axis.draw(this.context, this.axis);
+    axis.draw(this.context, this.axis, false);
 
     this.data.forEach((dataPoint, index) => {
       const { value, scenario } = extractSimpleValue(dataPoint);

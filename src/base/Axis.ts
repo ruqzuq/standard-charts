@@ -10,6 +10,8 @@ export class ColumnAxis {
   width: number;
   orientation: Orientation;
 
+  static asyncDraw: (() => void)[] = [];
+
   constructor({ x, y }: Position, width: number, orientation: Orientation) {
     this.x = orientation === Orientation.Horizontal ? x : y;
     this.y = orientation === Orientation.Horizontal ? y : x;
@@ -19,23 +21,32 @@ export class ColumnAxis {
 
   draw(
     context: OffscreenCanvasRenderingContext2D,
-    scenario: Scenario = undefined
+    scenario: Scenario = undefined,
+    async = true
   ) {
-    switch (scenario) {
-      case Scenario.PY:
-        this.drawPY(context);
-        break;
-      case Scenario.AC:
-        this.drawAC(context);
-        break;
-      case Scenario.FC:
-        this.drawFC(context);
-        break;
-      case Scenario.PL:
-        this.drawPL(context);
-        break;
-      default:
-        this.drawAC(context);
+    const draw = () => {
+      switch (scenario) {
+        case Scenario.PY:
+          this.drawPY(context);
+          break;
+        case Scenario.AC:
+          this.drawAC(context);
+          break;
+        case Scenario.FC:
+          this.drawFC(context);
+          break;
+        case Scenario.PL:
+          this.drawPL(context);
+          break;
+        default:
+          this.drawAC(context);
+      }
+    };
+
+    if (async) {
+      ColumnAxis.asyncDraw.push(draw);
+    } else {
+      draw();
     }
   }
 

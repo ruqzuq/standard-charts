@@ -1,3 +1,4 @@
+import { ColumnAxis } from './base/Axis';
 import { Scenario } from './base/Data';
 import { Line } from './base/Line';
 import { Rect } from './base/Rect';
@@ -55,12 +56,17 @@ export const StandardCharts = async (charts: ChartProps[]) => {
       draw();
     });
     //
+    ColumnAxis.asyncDraw.forEach((draw) => {
+      draw();
+    });
+    //
     Text.asyncDraw.forEach((draw) => {
       draw();
     });
     // Clear static cache.
     while (Line.asyncDraw.length > 0) Line.asyncDraw.pop();
     while (Rect.asyncDraw.length > 0) Rect.asyncDraw.pop();
+    while (ColumnAxis.asyncDraw.length > 0) ColumnAxis.asyncDraw.pop();
     while (Text.asyncDraw.length > 0) Text.asyncDraw.pop();
   });
 
