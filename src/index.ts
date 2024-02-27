@@ -1,6 +1,7 @@
 import { Axis } from './base/Axis';
 import { Scenario } from './base/Data';
 import { Line } from './base/Line';
+import { Polygon } from './base/Polgyon';
 import { Rect } from './base/Rect';
 import { Text } from './base/Text';
 import { ScenarioChart, ScenarioChartProps } from './charts/ScenarioChart';
@@ -56,6 +57,10 @@ export const StandardCharts = async (charts: ChartProps[]) => {
       draw();
     });
     //
+    Polygon.asyncDraw.forEach((draw) => {
+      draw();
+    });
+    //
     Axis.asyncDraw.forEach((draw) => {
       draw();
     });
@@ -66,6 +71,7 @@ export const StandardCharts = async (charts: ChartProps[]) => {
     // Clear static cache.
     while (Line.asyncDraw.length > 0) Line.asyncDraw.pop();
     while (Rect.asyncDraw.length > 0) Rect.asyncDraw.pop();
+    while (Polygon.asyncDraw.length > 0) Polygon.asyncDraw.pop();
     while (Axis.asyncDraw.length > 0) Axis.asyncDraw.pop();
     while (Text.asyncDraw.length > 0) Text.asyncDraw.pop();
   });
