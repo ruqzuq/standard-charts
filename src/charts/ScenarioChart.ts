@@ -475,7 +475,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
 
       // Prevent text from being rendered above the axis.
 
-      const axisTextOrigin =
+      const tick =
         this.style !== ChartStyle.Line
           ? OrientationBox.fromCenter(origin, 4, 4)
           : positiveStackValue
@@ -491,18 +491,18 @@ export class ScenarioChart extends Chart<ParallelDataType> {
         negativeValueText.draw(this.context, this.debug);
       } else if (positiveStackValue) {
         positiveValueText.placeNorth(positiveTextAnchor ?? positiveAnchor);
-        keyText.placeSouth(axisTextOrigin);
+        keyText.placeSouth(tick);
         //
         positiveValueText.draw(this.context, this.debug);
       } else if (negativeStackValue) {
         negativeValueText.placeSouth(negativeTextAnchor ?? negativeAnchor);
-        keyText.placeNorth(axisTextOrigin);
+        keyText.placeNorth(tick);
         //
         negativeValueText.draw(this.context, this.debug);
       }
 
       if (this.style === ChartStyle.Line) {
-        Rect.drawFill(this.context, axisTextOrigin, Color.Fill.AC);
+        Rect.drawFill(this.context, tick, Color.Fill.AC);
       }
 
       keyText.draw(this.context, this.debug);

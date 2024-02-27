@@ -6,11 +6,13 @@ import { SimpleDataType } from '../base/DataTypes';
 import { Orientation } from '../base/orientation/Orientation';
 import { OrientationBox } from '../base/orientation/OrientationBox';
 import { OrientationText } from '../base/orientation/OrientationText';
+import { Polygon } from '../base/Polgyon';
 import { Rect } from '../base/Rect';
+import { Position } from '../base/Types';
 import { MaxMeasure } from '../base/utils/MaxMeasure';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
-import { ChartType } from './Types';
+import { ChartStyle, ChartType } from './Types';
 
 export interface VarianceChartProps extends ChartProps<SimpleDataType> {
   type: ChartType.Variance;
@@ -143,6 +145,12 @@ export class VarianceChart extends Chart<SimpleDataType> {
     );
     axis.draw(this.context, this.axis, false);
 
+    // Arra
+    let lastValue: number;
+    let lastValuePosition: Position;
+    let lastScenario: Scenario;
+    const area: Position[] = [];
+
     this.data.forEach((dataPoint, index) => {
       const { value, scenario } = extractSimpleValue(dataPoint);
 
@@ -190,12 +198,100 @@ export class VarianceChart extends Chart<SimpleDataType> {
           );
           valueText.placeSouth(valueBox);
         }
-        Rect.draw(
-          this.context,
-          valueBox,
-          scenario,
-          value >= 0 ? Color.Impact.Color.Positive : Color.Impact.Color.Negative
-        );
+
+        if (this.style === ChartStyle.Area) {
+          //
+          const valuePosition =
+            value >= 0 ? valueBox.north() : valueBox.south();
+          if (index === 0) {
+            area.push(origin.center());
+          } else if (Math.sign(value) !== Math.sign(lastValue)) {
+            //draw
+            const intersectionAxis = {
+              x:
+                valuePosition.x +
+                ((this.axisOrigin - valuePosition.y) *
+                  (lastValuePosition.x - valuePosition.x)) /
+                  (lastValuePosition.y - valuePosition.y),
+              y: this.axisOrigin,
+            };
+            area.push(intersectionAxis);
+            Polygon.draw(
+              this.context,
+              area,
+              lastScenario,
+              lastValue >= 0
+                ? Color.Impact.Color.Positive
+                : Color.Impact.Color.Negative
+            );
+            while (area.length > 0) area.pop();
+            area.push(intersectionAxis);
+          } else if (lastScenario !== scenario) {
+            //draw
+            const intersectionTop = {
+              x:
+                lastValuePosition.x +
+                (valuePosition.x - lastValuePosition.x) / 2,
+              y:
+                lastValuePosition.y +
+                (valuePosition.y - lastValuePosition.y) / 2,
+            };
+            const intersectionBottom = {
+              x: intersectionTop.x,
+              y: this.axisOrigin,
+            };
+            area.push(intersectionTop);
+            area.push(intersectionBottom);
+            Polygon.draw(
+              this.context,
+              area,
+              lastScenario,
+              lastValue >= 0
+                ? Color.Impact.Color.Positive
+                : Color.Impact.Color.Negative
+            );
+            while (area.length > 0) area.pop();
+            area.push(intersectionBottom);
+            area.push(intersectionTop);
+          }
+
+          area.push(valuePosition);
+
+          if (index === this.data.length - 1) {
+            area.push(origin.center());
+            //draw
+            Polygon.draw(
+              this.context,
+              area,
+              scenario,
+              value >= 0
+                ? Color.Impact.Color.Positive
+                : Color.Impact.Color.Negative
+            );
+          }
+
+          lastValue = value;
+          lastValuePosition = valuePosition;
+          lastScenario = scenario;
+
+          const pointSize =
+            Constants.PointToWidthRelation * this.axisElementWidth;
+          const tick =
+            value >= 0
+              ? OrientationBox.fromSouth(origin, 2, pointSize / 2)
+              : OrientationBox.fromNorth(origin, 2, pointSize / 2);
+          Rect.drawFill(this.context, tick, Color.Fill.AC);
+        } else {
+          Rect.draw(
+            this.context,
+            valueBox,
+            scenario,
+            value >= 0
+              ? Color.Impact.Color.Positive
+              : Color.Impact.Color.Negative
+          );
+        }
+
         valueText.draw(this.context, this.debug);
       }
     });
