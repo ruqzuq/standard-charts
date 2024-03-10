@@ -556,16 +556,19 @@ export class ScenarioChart extends Chart<ParallelDataType> {
         const deviation =
           value && comparison ? round(value - comparison, 2) : undefined;
 
-        return {
+        const data = {
           key: dataPoint.key,
-          [FC
-            ? Scenario.FC
-            : AC
-              ? Scenario.AC
-              : extension.delta === Scenario.PY
-                ? Scenario.PL
-                : Scenario.PY]: deviation,
         };
+
+        if (FC) {
+          return { ...data, [Scenario.FC]: deviation };
+        } else if (AC) {
+          return { ...data, [Scenario.AC]: deviation };
+        } else if (extension.delta === Scenario.PY && PL) {
+          return { ...data, [Scenario.PL]: deviation };
+        } else if (extension.delta === Scenario.PL && PY) {
+          return { ...data, [Scenario.PY]: deviation };
+        }
       }),
       axis: extension.delta,
       debug: this.debug,
