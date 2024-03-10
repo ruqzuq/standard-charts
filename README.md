@@ -1,8 +1,10 @@
-[<img src="https://raw.githubusercontent.com/ruqzuq/ruqzuq/main/Standard-Charts.png" width="100%">](https://ruqzuq.com/)
+[<img src="https://raw.githubusercontent.com/ruqzuq/ruqzuq/main/Standard-Charts.png" width="100%"/>](https://ruqzuq.com/)
 
-[Standard-Charts](https://ruqzuq.com/standard-charts) is an open-source chart-library inspired by **IBCS** (uncertified)[1]. It empowers developers to unite modern and timeless corporate financial visualization.
+[Standard-Charts](https://ruqzuq.com) is an open-source chart-library inspired by **IBCS** (uncertified)[1]. It empowers developers to unite modern and timeless corporate financial visualization.
 
 ## Installation
+
+Information on installation can be found [here](https://ruqzuq.com/docs/documentation/installation).
 
 | Yarn                       | npm                           |
 | -------------------------- | ----------------------------- |
@@ -50,8 +52,16 @@ export function App() {
 Now this simple column chart should appear:
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/ruqzuq/ruqzuq/main/Example.png">
+<img src="https://raw.githubusercontent.com/ruqzuq/ruqzuq/main/Example.png"/>
 </div>
+
+## Documentation
+
+You can find the documentation [here](https://ruqzuq.com/docs/documentation/about).
+
+## API
+
+You can find the API documentation [here](https://ruqzuq.com/docs/api/StandardCharts).
 
 ## License
 
