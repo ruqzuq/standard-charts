@@ -544,24 +544,28 @@ export class ScenarioChart extends Chart<ParallelDataType> {
       data: this.data.map((dataPoint) => {
         const { PY, AC, FC, PL } = dataPoint;
 
-        const value = AC || FC ? (AC ?? 0) + (FC ?? 0) : undefined;
+        const value =
+          AC || FC
+            ? (AC ?? 0) + (FC ?? 0)
+            : extension.delta === Scenario.PY
+              ? PL ?? undefined
+              : PY ?? undefined;
         const comparison =
           extension.delta === Scenario.PY ? PY ?? undefined : PL ?? undefined;
 
         const deviation =
           value && comparison ? round(value - comparison, 2) : undefined;
 
-        if (FC) {
-          return {
-            key: dataPoint.key,
-            [Scenario.FC]: deviation,
-          };
-        } else {
-          return {
-            key: dataPoint.key,
-            [Scenario.AC]: deviation,
-          };
-        }
+        return {
+          key: dataPoint.key,
+          [FC
+            ? Scenario.FC
+            : AC
+              ? Scenario.AC
+              : extension.delta === Scenario.PY
+                ? Scenario.PL
+                : Scenario.PY]: deviation,
+        };
       }),
       axis: extension.delta,
       debug: this.debug,
