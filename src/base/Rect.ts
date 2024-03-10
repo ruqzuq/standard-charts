@@ -20,7 +20,7 @@ export class Rect {
   ) {
     switch (scenario) {
       case Scenario.PY:
-        this.drawPY(context, box);
+        this.drawPY(context, box, customColor);
         break;
       case Scenario.AC:
         this.drawAC(context, box, customColor);
@@ -42,10 +42,16 @@ export class Rect {
     });
   }
 
-  static drawPY(context: OffscreenCanvasRenderingContext2D, box: Box) {
+  static drawPY(
+    context: OffscreenCanvasRenderingContext2D,
+    box: Box,
+    customColor: string
+  ) {
     Rect.asyncDraw.push(() => {
-      context.fillStyle = Color.Fill.PY;
+      context.filter = customColor ? 'opacity(0.6)' : 'none';
+      context.fillStyle = customColor ?? Color.Fill.PY;
       context.fillRect(box.drawX(), box.drawY(), box.width, box.height);
+      context.filter = 'none';
     });
   }
   static drawAC(
