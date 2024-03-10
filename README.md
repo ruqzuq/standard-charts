@@ -1,67 +1,71 @@
-<h1 align="center"> Standard-Charts </h1>
+[<img src="https://raw.githubusercontent.com/ruqzuq/ruqzuq/main/Standard-Charts.png" width="100%"/>](https://ruqzuq.com/)
 
-<div align="center">
-<a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
-<img src="https://img.shields.io/badge/download-standard--charts-%23009933?style=flat-square">
-</a>
+[Standard-Charts](https://ruqzuq.com) is an open-source chart-library inspired by **IBCS** (uncertified)[1]. It empowers developers to unite modern and timeless corporate financial visualization.
 
-<a href="https://github.com/ruqzuq/standard-charts/tree/main/dist">
-<img src="https://img.shields.io/github/size/ruqzuq/standard-charts/dist/standard-charts_v0.1.4.js?style=flat-square">
-</a>
+## Installation
 
-<a href="https://ruqzuq.com/standard-charts">
-<img src="https://img.shields.io/badge/see-templates-%230022aa?style=flat-square">
-</a>
-</div>
+Information on installation can be found [here](https://ruqzuq.com/docs/documentation/installation).
 
-<a href="https://ruqzuq.com/standard-charts" align="center">
-<img src="./homepage/documentation/banner.png">
-</a>
+| Yarn                       | npm                           |
+| -------------------------- | ----------------------------- |
+| `yarn add standard-charts` | `npm install standard-charts` |
 
-[Standard-Charts](https://ruqzuq.com/standard-charts) is an open-source chart-library inspired by **IBCS** (unlicensed)[1]. It empowers developers to unite modern and timeless corporate financial visualization.
+## Quick Start
 
----
-
-## First steps
-
-These steps are appropriate for plain JavaScript. Different approaches may be needed when using a framework.
-
-First, include the library.
+This is an example with *React*. Different approaches are required for other frameworks.
 
 ```jsx
-<script src="./standard-charts_v0.1.4.js"></script>
+import React, { useEffect, useState } from 'react';
+import { ChartStyle, ChartType, StandardCharts, VarianceType } from 'standard-charts';
+
+export function App() {
+  const [ref, setRef] = useState();
+
+  useEffect(() => {
+    StandardCharts([
+      {
+        type: ChartType.Scenario,
+        style: ChartStyle.Column,
+        width: 300,
+        height: 300,
+        variances: [
+          {
+            variance: VarianceType.Absolute,
+            delta: Scenario.PY,
+          },
+        ],
+        data: [
+          { key: '2022', PY: 22, AC: 29 },
+          { key: '2023', PY: 37, AC: 31 },
+          { key: '2024', PY: 26, FC: 32 },
+        ],
+      },
+    ]).then((charts) => {
+      setRef(charts[0]);
+    });
+  }, []);
+
+  return <img src={ref} />;
+}
 ```
 
-Then call the API and include the generated `.svg`.
-
-```jsx
-<img id="chart" />
-
-<script>
-  const chart = StandardCharts({
-    chartType: 'COLUMN',
-    height: 100,
-    data: [
-      { key: '20', AC: 29 },
-      { key: '21', AC: 31 },
-      { key: '22', AC: 32 },
-    ],
-  });
-
-  const image = document.getElementById('chart');
-  image.setAttribute('src', `data:image/svg+xml;utf8,${chart}`);
-</script>
-```
-
-Now this trivial column chart should appear:
+Now this simple column chart should appear:
 
 <div align="center">
-<img src="./homepage/documentation/trivialExample.svg" style="background-color:white;">
+<img src="https://raw.githubusercontent.com/ruqzuq/ruqzuq/main/Example.png"/>
 </div>
+
+## Documentation
+
+You can find the documentation [here](https://ruqzuq.com/docs/documentation/about).
+
+## API
+
+You can find the API documentation [here](https://ruqzuq.com/docs/api/StandardCharts).
 
 ## License
 
-The [package](https://github.com/ruqzuq/standard-charts/tree/main/package) and the downloadable [distributions](https://github.com/ruqzuq/standard-charts/tree/main/dist) are licensed under the _MIT License_. Everything else, including the homepage in this repository, is not licensed and unauthorized use/modification/distribution constitutes a legal violation.
+The project is licensed under the _MIT License_. 
 
 ## References
 
