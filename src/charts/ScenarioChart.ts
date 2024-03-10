@@ -18,20 +18,20 @@ import {
 } from '../extensions/ReferenceExtension';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
-import { ChartStyle, ChartType } from './Types';
+import { ChartStyle, ChartType, VarianceType } from './Types';
 import { VarianceChart } from './VarianceChart';
 
 export interface ScenarioChartProps extends ChartProps<ParallelDataType> {
   type: ChartType.Scenario;
   style: ChartStyle.Column | ChartStyle.Line | ChartStyle.Bar;
-  variance?: VarianceExtension[];
+  variances?: VarianceExtension[];
   start?: ReferenceExtensionProps;
   end?: ReferenceExtensionProps;
   percentage?: boolean;
 }
 
 export interface VarianceExtension {
-  variance: 'ABSOLUTE' | 'RELATIVE';
+  variance: VarianceType;
   delta: Scenario.PY | Scenario.PL;
 }
 
@@ -62,7 +62,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
 
   constructor(props: ScenarioChartProps) {
     super(props);
-    const { variance, start, end, percentage } = props;
+    const { variances, start, end, percentage } = props;
 
     this.percentage = percentage;
 
@@ -122,8 +122,8 @@ export class ScenarioChart extends Chart<ParallelDataType> {
     this.columnMargin =
       Constants.ColumnMarginToWidthRelation * this.axisElementWidth;
 
-    if (variance) {
-      variance.forEach((extension) => {
+    if (variances) {
+      variances.forEach((extension) => {
         this.varianceExtension(extension);
       });
     }

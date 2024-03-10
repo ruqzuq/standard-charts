@@ -5,7 +5,7 @@ import { Polygon } from './base/Polgyon';
 import { Rect } from './base/Rect';
 import { Text } from './base/Text';
 import { ScenarioChart, ScenarioChartProps } from './charts/ScenarioChart';
-import { ChartStyle, ChartType } from './charts/Types';
+import { ChartStyle, ChartType, VarianceType } from './charts/Types';
 import { VarianceChart, VarianceChartProps } from './charts/VarianceChart';
 import { ExtensionType } from './extensions/Types';
 
@@ -13,7 +13,7 @@ export type ChartProps = ScenarioChartProps | VarianceChartProps;
 
 export type Chart = ScenarioChart | VarianceChart;
 
-export { ChartType, ChartStyle, Scenario, ExtensionType };
+export { ChartType, ChartStyle, Scenario, ExtensionType, VarianceType };
 
 /**
  * Return URL of the rendered chart png-images.

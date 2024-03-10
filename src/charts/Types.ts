@@ -11,3 +11,8 @@ export enum ChartStyle {
   Line = 'LINE',
   Area = 'AREA',
 }
+
+export enum VarianceType {
+  Absolute = 'ABSOLUTE',
+  Relative = 'RELATIVE',
+}

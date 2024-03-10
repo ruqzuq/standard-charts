@@ -12,11 +12,11 @@ import { Position } from '../base/Types';
 import { MaxMeasure } from '../base/utils/MaxMeasure';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
-import { ChartStyle, ChartType } from './Types';
+import { ChartStyle, ChartType, VarianceType } from './Types';
 
 export interface VarianceChartProps extends ChartProps<SimpleDataType> {
   type: ChartType.Variance;
-  variance: 'ABSOLUTE' | 'RELATIVE';
+  variance: VarianceType;
   axis?: Scenario;
 }
 
