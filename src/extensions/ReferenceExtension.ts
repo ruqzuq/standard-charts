@@ -7,12 +7,12 @@ import { formatValue } from '../base/utils/ValueFormat';
 import { Constants } from '../charts/Constants';
 import { ExtensionType } from './Types';
 
-export interface IndexExtensionProps {
-  extension: ExtensionType.Index;
+export interface ReferenceExtensionProps {
+  extension: ExtensionType.Reference;
   value: number;
 }
 
-export class IndexExtension {
+export class ReferenceExtension {
   value: number;
   context: OffscreenCanvasRenderingContext2D;
 
@@ -28,7 +28,7 @@ export class IndexExtension {
   percentage: boolean;
 
   constructor(
-    props: IndexExtensionProps,
+    props: ReferenceExtensionProps,
     context: OffscreenCanvasRenderingContext2D,
     isLeft: boolean,
     orientation: Orientation,

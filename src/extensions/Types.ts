@@ -1,3 +1,3 @@
 export enum ExtensionType {
-  Index = 'INDEX',
+  Reference = 'REFERENCE',
 }

@@ -13,9 +13,9 @@ import { round } from '../base/utils/Math';
 import { MaxMeasure } from '../base/utils/MaxMeasure';
 import { formatValue } from '../base/utils/ValueFormat';
 import {
-  IndexExtension,
-  IndexExtensionProps,
-} from '../extensions/IndexExtension';
+  ReferenceExtensionProps,
+  ReferenceExtension,
+} from '../extensions/ReferenceExtension';
 import { Chart, ChartProps } from './Chart';
 import { Constants } from './Constants';
 import { ChartStyle, ChartType } from './Types';
@@ -25,8 +25,8 @@ export interface ScenarioChartProps extends ChartProps<ParallelDataType> {
   type: ChartType.Scenario;
   style: ChartStyle.Column | ChartStyle.Line | ChartStyle.Bar;
   variance?: VarianceExtension[];
-  start?: IndexExtensionProps;
-  end?: IndexExtensionProps;
+  start?: ReferenceExtensionProps;
+  end?: ReferenceExtensionProps;
   percentage?: boolean;
 }
 
@@ -53,8 +53,8 @@ export class ScenarioChart extends Chart<ParallelDataType> {
   //
   varianceCharts: VarianceChart[] = [];
   //
-  startAxisExtension: IndexExtension;
-  endAxisExtension: IndexExtension;
+  startAxisExtension: ReferenceExtension;
+  endAxisExtension: ReferenceExtension;
   //
   pointSize: number = 0; // Line-Chart
   //
@@ -67,7 +67,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
     this.percentage = percentage;
 
     if (start)
-      this.startAxisExtension = new IndexExtension(
+      this.startAxisExtension = new ReferenceExtension(
         start,
         this.context,
         true,
@@ -75,7 +75,7 @@ export class ScenarioChart extends Chart<ParallelDataType> {
         this.percentage
       );
     if (end)
-      this.endAxisExtension = new IndexExtension(
+      this.endAxisExtension = new ReferenceExtension(
         end,
         this.context,
         false,
